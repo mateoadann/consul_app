@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Series - Admin{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Series de turnos</h1>
+    <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver a admin</a>
+  </div>
+
+  <div class="list-wrap">
+    {% for log in logs.items %}
+      <div class="list-item">
+        <strong>Serie {{ log.serie_id }}</strong>
+        <small>Intentados: {{ log.total_intentados }} | Creados: {{ log.total_creados }} | Fallidos: {{ log.total_fallidos }}</small>
+        <small>Desde {{ log.fecha_inicio|fecha_corta }} hasta {{ log.fecha_limite|fecha_corta }}</small>
+      </div>
+    {% else %}
+      <p class="muted">Sin ejecuciones de series.</p>
+    {% endfor %}
+  </div>
+
+  <div class="pager">
+    {% if logs.has_prev %}
+      <a class="btn btn-ghost" href="{{ url_for('admin.series_logs', page=logs.prev_num) }}">Anterior</a>
+    {% endif %}
+    <span>Pagina {{ logs.page }} / {{ logs.pages or 1 }}</span>
+    {% if logs.has_next %}
+      <a class="btn btn-ghost" href="{{ url_for('admin.series_logs', page=logs.next_num) }}">Siguiente</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

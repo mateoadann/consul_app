@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Paciente {{ paciente.apellido }} - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>{{ paciente.apellido }}, {{ paciente.nombre }}</h1>
+    <a href="{{ url_for('pacientes.editar', paciente_id=paciente.id) }}" class="btn btn-ghost">Editar</a>
+  </div>
+
+  <dl class="detail-grid">
+    <dt>DNI</dt><dd>{{ paciente.dni }}</dd>
+    <dt>Telefono</dt><dd>{{ paciente.telefono or '-' }}</dd>
+    <dt>Email</dt><dd>{{ paciente.email or '-' }}</dd>
+    <dt>Obra social</dt><dd>{{ paciente.obra_social or '-' }}</dd>
+  </dl>
+
+  <h2>Ultimos turnos</h2>
+  <div class="list-wrap">
+    {% for turno in turnos %}
+      <a class="list-item" href="{{ url_for('turnos.detalle', turno_id=turno.id) }}">
+        <strong>{{ turno.start_at|fecha_hora_corta }}</strong>
+        <small>{{ turno.profesional.apellido }} - {{ turno.estado }}</small>
+      </a>
+    {% else %}
+      <p class="muted">Sin turnos aun.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

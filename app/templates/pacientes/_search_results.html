@@ -1,0 +1,16 @@
+{% if pacientes %}
+  <ul class="search-results">
+    {% for paciente in pacientes %}
+      <li
+        class="search-item"
+        data-paciente-id="{{ paciente.id }}"
+        data-paciente-label="{{ paciente.apellido }}, {{ paciente.nombre }} - DNI {{ paciente.dni }}"
+      >
+        <strong>{{ paciente.apellido }}, {{ paciente.nombre }}</strong>
+        <small>DNI {{ paciente.dni }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% elif request.args.get('q') or request.args.get('paciente_query') %}
+  <div class="field-help">No se encontraron resultados.</div>
+{% endif %}

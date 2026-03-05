@@ -1,0 +1,9 @@
+{% if turno %}
+  <a class="turno-card" href="{{ url_for('turnos.detalle', turno_id=turno.id) }}">
+    <strong>{{ turno.paciente.apellido }}</strong>
+    <small>{{ turno.profesional.apellido }}</small>
+    {% with turno=turno %}{% include 'components/turno_badge.html' %}{% endwith %}
+  </a>
+{% else %}
+  <a class="new-slot" href="{{ url_for('turnos.nuevo', fecha=fecha.isoformat(), hora=slot.strftime('%H:%M'), consultorio_id=consultorio.id) }}">+</a>
+{% endif %}

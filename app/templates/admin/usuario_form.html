@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar usuario' if is_edit else 'Nuevo usuario' }} - Admin{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>{{ 'Editar usuario' if is_edit else 'Nuevo usuario' }}</h1>
+    <a class="btn btn-ghost" href="{{ url_for('admin.usuarios') }}">Volver</a>
+  </div>
+
+  <form method="post" class="stack">
+    {{ form.hidden_tag() }}
+
+    <label>
+      {{ form.username.label }}
+      {{ form.username(class_='input', placeholder='nombre.usuario', autocomplete='off') }}
+      {% for error in form.username.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label>
+      {{ form.nombre.label }}
+      {{ form.nombre(class_='input') }}
+      {% for error in form.nombre.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label>
+      {{ form.apellido.label }}
+      {{ form.apellido(class_='input') }}
+      {% for error in form.apellido.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label>
+      {{ form.role.label }}
+      {{ form.role(class_='input') }}
+      {% for error in form.role.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label class="switch-inline">
+      {{ form.activo() }} Activo
+    </label>
+
+    {% if not is_edit %}
+      <label>
+        {{ form.password.label }}
+        {{ form.password(class_='input', autocomplete='new-password') }}
+        {% for error in form.password.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      </label>
+    {% endif %}
+
+    {{ form.submit(class_='btn btn-primary btn-lg') }}
+  </form>
+
+  {% if is_edit %}
+    <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #e7ecef">
+      <a class="btn btn-ghost" href="{{ url_for('admin.reset_password', user_id=user.id) }}">Resetear contrasena</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if paciente else 'Nuevo' }} Paciente - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>{{ 'Editar' if paciente else 'Nuevo' }} paciente</h1>
+
+  <form method="post" class="stack">
+    {{ form.hidden_tag() }}
+
+    <label>{{ form.nombre.label }} {{ form.nombre(class_='input') }}</label>
+    {% for error in form.nombre.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+
+    <label>{{ form.apellido.label }} {{ form.apellido(class_='input') }}</label>
+    {% for error in form.apellido.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+
+    <label>
+      {{ form.dni.label }}
+      {{ form.dni(
+        class_='input',
+        **{
+          'hx-get': url_for('pacientes.validar_dni_htmx'),
+          'hx-trigger': 'change',
+          'hx-target': '#dni-feedback',
+          'hx-vals': '{"paciente_id": "%s"}' % (paciente.id if paciente else '')
+        }
+      ) }}
+    </label>
+    <div id="dni-feedback"></div>
+    {% for error in form.dni.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+
+    <label>{{ form.telefono.label }} {{ form.telefono(class_='input') }}</label>
+    <label>{{ form.email.label }} {{ form.email(class_='input') }}</label>
+    <label>{{ form.obra_social.label }} {{ form.obra_social(class_='input') }}</label>
+    <label>{{ form.notas.label }} {{ form.notas(class_='input', rows='4') }}</label>
+    <label class="switch-inline">{{ form.activo() }} Activo</label>
+
+    {{ form.submit(class_='btn btn-primary btn-lg') }}
+  </form>
+</section>
+{% endblock %}

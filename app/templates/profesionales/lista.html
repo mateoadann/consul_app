@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Profesionales - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Profesionales</h1>
+    <div class="card-header-actions">
+      <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver a admin</a>
+      <a href="{{ url_for('profesionales.nuevo') }}" class="btn btn-primary">+ Nuevo</a>
+    </div>
+  </div>
+
+  <div class="list-wrap">
+    {% for profesional in profesionales %}
+      <a class="list-item" href="{{ url_for('profesionales.detalle', profesional_id=profesional.id) }}">
+        <strong>{{ profesional.apellido }}, {{ profesional.nombre }}</strong>
+        <small>{{ profesional.especialidad or 'Sin especialidad' }}</small>
+      </a>
+    {% else %}
+      <p class="muted">No hay profesionales.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

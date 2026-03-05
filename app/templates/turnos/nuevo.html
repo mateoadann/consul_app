@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo Turno - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>{{ 'Editar turno' if is_edit else 'Nuevo turno' }}</h1>
+    <a href="{{ url_for('agenda.index', fecha=form.fecha.data.isoformat()) if form.fecha.data else url_for('agenda.index') }}" class="btn btn-ghost">Cerrar</a>
+  </div>
+
+  <form method="post" class="stack turno-form">
+    {{ form.hidden_tag() }}
+
+    <label>
+      {{ form.fecha.label }}
+      {{ form.fecha(
+          class_='input',
+          **{
+            'hx-get': url_for('turnos.htmx_ocupados'),
+            'hx-trigger': 'change',
+            'hx-target': '#ocupados-container',
+            'hx-include': '[name="fecha"], [name="consultorio_id"]'
+          }
+      ) }}
+      {% for error in form.fecha.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label class="time-field">
+      {{ form.hora_inicio.label }}
+      <div class="time-split-picker" data-source-field-id="{{ form.hora_inicio.id }}"></div>
+      {{ form.hora_inicio(class_='input time-combined-select') }}
+      {% for error in form.hora_inicio.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label class="time-field">
+      {{ form.hora_fin.label }}
+      <div class="time-split-picker" data-source-field-id="{{ form.hora_fin.id }}"></div>
+      {{ form.hora_fin(class_='input time-combined-select') }}
+      {% for error in form.hora_fin.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label>
+      {{ form.consultorio_id.label }}
+      {{ form.consultorio_id(
+          class_='input',
+          **{
+            'hx-get': url_for('turnos.htmx_ocupados'),
+            'hx-trigger': 'change',
+            'hx-target': '#ocupados-container',
+            'hx-include': '[name="fecha"], [name="consultorio_id"]'
+          }
+      ) }}
+      {% for error in form.consultorio_id.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <div
+      id="ocupados-container"
+      hx-get="{{ url_for('turnos.htmx_ocupados') }}"
+      hx-trigger="load"
+      hx-include="[name='fecha'], [name='consultorio_id']"
+      hx-swap="innerHTML"
+    ></div>
+
+    <label>
+      {{ form.profesional_id.label }}
+      {{ form.profesional_id(class_='input') }}
+      {% for error in form.profesional_id.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label>
+      {{ form.paciente_query.label }}
+      {{ form.paciente_query(
+          class_='input',
+          autocomplete='off',
+          placeholder='Buscar paciente...',
+          **{
+            'hx-get': url_for('pacientes.buscar_htmx'),
+            'hx-trigger': 'keyup changed delay:300ms',
+            'hx-target': '#paciente-results',
+            'hx-include': '[name="paciente_query"]'
+          }
+      ) }}
+      {% for error in form.paciente_query.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    {{ form.paciente_id(id='paciente_id') }}
+    <div id="paciente-results" class="search-suggestions"></div>
+
+    {% if allow_recurrencia %}
+      <label class="switch-inline">
+        {{ form.repetir() }} Repetir turno
+      </label>
+
+      <section id="recurrencia-panel" class="recurrence-panel" hidden>
+        <label>
+          {{ form.cada_n_semanas.label }}
+          {{ form.cada_n_semanas(class_='input', min='1', max='12') }}
+          {% for error in form.cada_n_semanas.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        </label>
+
+        <label>
+          {{ form.fecha_limite.label }}
+          {{ form.fecha_limite(class_='input') }}
+          {% for error in form.fecha_limite.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        </label>
+
+        <div class="card recurrence-box">
+          <div class="card-header-row">
+            <strong>Patrones de repeticion</strong>
+            <button type="button" class="btn btn-ghost" id="add-recurrencia-patron">+ Agregar</button>
+          </div>
+          <small class="field-help">Configura dia, horario y consultorio para cada patron.</small>
+          <div id="recurrencia-patrones-list" class="stack"></div>
+          {% for error in form.recurrencia_patrones.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        </div>
+
+        {{ form.recurrencia_patrones(id='recurrencia_patrones') }}
+        <script id="recurrencia-consultorios" type="application/json">{{ form.consultorio_id.choices|tojson }}</script>
+        <script id="recurrencia-horas-inicio" type="application/json">{{ form.hora_inicio.choices|tojson }}</script>
+        <script id="recurrencia-horas-fin" type="application/json">{{ form.hora_fin.choices|tojson }}</script>
+      </section>
+    {% endif %}
+
+    {{ form.submit(class_='btn btn-primary btn-lg', value='Guardar cambios' if is_edit else 'Reservar turno') }}
+  </form>
+
+  {% if alternatives %}
+    <section class="alt-times">
+      <h2>Horarios alternativos</h2>
+      <div class="alt-times-grid">
+        {% for start, _end in alternatives %}
+          <a class="chip" href="{{ url_for('turnos.nuevo', fecha=start.date().isoformat(), hora=start.strftime('%H:%M'), consultorio_id=form.consultorio_id.data) }}">
+            {{ start|hora_24 }}
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</section>
+{% endblock %}

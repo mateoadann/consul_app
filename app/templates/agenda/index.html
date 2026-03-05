@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Agenda - ConsulApp{% endblock %}
+{% block content %}
+<section class="agenda-header card">
+  <div id="agenda-day-nav" class="day-nav">
+    <a
+      class="btn btn-ghost"
+      data-day-offset="-1"
+      href="{{ url_for('agenda.index', fecha=fecha_prev.isoformat(), mine='1' if mis_turnos else '0', profesional_id=profesional_id_filter, consultorio_id=consultorio_id_filter) }}"
+    >&lt;</a>
+
+    <div class="day-nav-center">
+      <strong id="agenda-day-label">{{ fecha|fecha_agenda_corta }}</strong>
+      <a
+        id="agenda-go-today"
+        class="btn btn-primary day-chip-today"
+        data-day-today="1"
+        href="{{ url_for('agenda.index', fecha=hoy.isoformat(), mine='1' if mis_turnos else '0', profesional_id=profesional_id_filter, consultorio_id=consultorio_id_filter) }}"
+        {% if fecha == hoy %}hidden{% endif %}
+      >Hoy</a>
+    </div>
+
+    <a
+      class="btn btn-ghost"
+      data-day-offset="1"
+      href="{{ url_for('agenda.index', fecha=fecha_next.isoformat(), mine='1' if mis_turnos else '0', profesional_id=profesional_id_filter, consultorio_id=consultorio_id_filter) }}"
+    >&gt;</a>
+  </div>
+
+  <form
+    id="agenda-filters"
+    class="filters"
+    hx-get="{{ url_for('agenda.htmx_grilla') }}"
+    hx-target="#grilla-container"
+    hx-swap="innerHTML"
+    hx-trigger="change delay:150ms"
+    hx-indicator="#agenda-loading"
+  >
+    <input id="agenda-consultorio-id" type="hidden" name="consultorio_id" value="{{ consultorio_id_filter or '' }}">
+    <div class="desktop-only">
+      <input id="agenda-fecha-input" type="date" name="fecha" value="{{ fecha.isoformat() }}" class="input">
+      <select name="profesional_id" class="input">
+        <option value="">Todos</option>
+        {% for profesional in profesionales %}
+          <option value="{{ profesional.id }}" {% if profesional_id_filter == profesional.id and not mis_turnos %}selected{% endif %}>
+            {{ profesional.apellido }}, {{ profesional.nombre }}
+          </option>
+        {% endfor %}
+      </select>
+      <label class="switch-inline">
+        <input type="checkbox" name="mine" value="1" {% if mis_turnos %}checked{% endif %}>
+        Mis turnos
+      </label>
+    </div>
+
+    <div class="consultorio-pills" aria-label="Filtrar por consultorio">
+      <button
+        type="button"
+        class="pill pill-neutral {% if not consultorio_id_filter %}is-active{% endif %}"
+        data-consultorio-pill=""
+      ><span class="pill-dot pill-dot-neutral"></span> Todos</button>
+      {% for consultorio in consultorios %}
+        <button
+          type="button"
+          class="pill consultorio-pill {{ consultorio.color_class }} {% if consultorio_id_filter == consultorio.id %}is-active{% endif %}"
+          data-consultorio-pill="{{ consultorio.id }}"
+        ><span class="pill-dot {{ consultorio.color_class }}"></span> {{ consultorio.nombre }}</button>
+      {% endfor %}
+    </div>
+  </form>
+</section>
+
+<div id="agenda-loading" class="field-help" hidden>Actualizando agenda...</div>
+<section id="grilla-container">
+  {% include 'agenda/_grilla_combined.html' %}
+</section>
+{% endblock %}

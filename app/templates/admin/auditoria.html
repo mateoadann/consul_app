@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Auditoria - Admin{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Auditoria de turnos</h1>
+    <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver a admin</a>
+  </div>
+
+  <div class="list-wrap">
+    {% for log in logs.items %}
+      <div class="list-item">
+        <strong>{{ log.accion }}</strong>
+        <small>
+          Turno #{{ log.turno_id }}
+          {% if log.campo_modificado %} | {{ log.campo_modificado }}{% endif %}
+          {% if log.valor_nuevo %} | nuevo: {{ log.valor_nuevo }}{% endif %}
+        </small>
+        <small>{{ log.created_at|fecha_hora_corta }}</small>
+      </div>
+    {% else %}
+      <p class="muted">Sin registros.</p>
+    {% endfor %}
+  </div>
+
+  <div class="pager">
+    {% if logs.has_prev %}
+      <a class="btn btn-ghost" href="{{ url_for('admin.auditoria', page=logs.prev_num) }}">Anterior</a>
+    {% endif %}
+    <span>Pagina {{ logs.page }} / {{ logs.pages or 1 }}</span>
+    {% if logs.has_next %}
+      <a class="btn btn-ghost" href="{{ url_for('admin.auditoria', page=logs.next_num) }}">Siguiente</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

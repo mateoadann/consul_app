@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Admin - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Configuracion</h1>
+  <p class="muted">Panel solo para administradores.</p>
+
+  <div class="list-wrap">
+    <a class="list-item" href="{{ url_for('consultorios.lista') }}">
+      <strong>Consultorios</strong>
+      <small>Crear, editar y activar/inactivar</small>
+    </a>
+    <a class="list-item" href="{{ url_for('profesionales.lista') }}">
+      <strong>Profesionales</strong>
+      <small>Gestion de profesionales del centro</small>
+    </a>
+    <a class="list-item" href="{{ url_for('admin.usuarios') }}">
+      <strong>Usuarios</strong>
+      <small>Usuarios de acceso al sistema</small>
+    </a>
+    <a class="list-item" href="{{ url_for('admin.auditoria') }}">
+      <strong>Auditoria</strong>
+      <small>Historial de cambios en turnos</small>
+    </a>
+    <a class="list-item" href="{{ url_for('admin.series_logs') }}">
+      <strong>Series</strong>
+      <small>Resumen de series creadas y fallidas</small>
+    </a>
+  </div>
+</section>
+{% endblock %}

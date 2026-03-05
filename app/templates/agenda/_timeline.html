@@ -1,0 +1,38 @@
+<div class="timeline">
+  {% for slot in timeline %}
+    <div class="timeline-slot">
+      <span class="timeline-time">{{ slot.time|hora_24 }}</span>
+
+      {% if slot.turnos %}
+        <div class="timeline-group">
+          {% for turno in slot.turnos %}
+            <a
+              class="timeline-card consultorio-color {{ turno.consultorio.color_class }}"
+              href="{{ url_for('turnos.detalle', turno_id=turno.id) }}"
+            >
+              <div class="timeline-card-header">
+                <span
+                  class="timeline-consultorio-chip consultorio-color {{ turno.consultorio.color_class }}"
+                >{{ turno.consultorio.nombre }}</span>
+                {% with turno=turno %}{% include 'components/turno_badge.html' %}{% endwith %}
+              </div>
+              <strong>
+                {{ turno.paciente.apellido }}{% if not consultorio_id_filter %} · {{ turno.profesional.apellido }}{% endif %}
+              </strong>
+              <small class="timeline-meta">{{ turno.start_at|hora_24 }}-{{ turno.end_at|hora_24 }}</small>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <a
+          class="timeline-card timeline-card-free"
+          href="{{ url_for('turnos.nuevo', fecha=fecha.isoformat(), hora=slot.time.strftime('%H:%M'), consultorio_id=consultorio_id_filter or '') }}"
+        >+ Disponible</a>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  {% if not timeline %}
+    <p class="timeline-empty muted">Sin turnos para este dia</p>
+  {% endif %}
+</div>

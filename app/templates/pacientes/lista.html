@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Pacientes - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Pacientes</h1>
+    <a href="{{ url_for('pacientes.nuevo') }}" class="btn btn-primary">+ Nuevo</a>
+  </div>
+
+  <form method="get" class="inline-form">
+    <input class="input" type="search" name="q" placeholder="Nombre, apellido o DNI" value="{{ q }}">
+    <button class="btn btn-ghost" type="submit">Buscar</button>
+  </form>
+
+  <div class="list-wrap">
+    {% for paciente in pagination.items %}
+      <a class="list-item" href="{{ url_for('pacientes.detalle', paciente_id=paciente.id) }}">
+        <strong>{{ paciente.apellido }}, {{ paciente.nombre }}</strong>
+        <small>DNI {{ paciente.dni }}</small>
+      </a>
+    {% else %}
+      <p class="muted">No hay pacientes cargados.</p>
+    {% endfor %}
+  </div>
+
+  <div class="pager">
+    {% if pagination.has_prev %}
+      <a class="btn btn-ghost" href="{{ url_for('pacientes.lista', page=pagination.prev_num, q=q) }}">Anterior</a>
+    {% endif %}
+    <span>Pagina {{ pagination.page }} / {{ pagination.pages or 1 }}</span>
+    {% if pagination.has_next %}
+      <a class="btn btn-ghost" href="{{ url_for('pacientes.lista', page=pagination.next_num, q=q) }}">Siguiente</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

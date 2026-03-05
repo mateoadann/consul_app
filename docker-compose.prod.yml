@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-consul_app}
+      POSTGRES_TEST_DB: ${POSTGRES_TEST_DB:-consul_app_test}
+      POSTGRES_USER: ${POSTGRES_USER:-consul}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-consul}
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file:
+      - .env
+    environment:
+      FLASK_ENV: production
+    depends_on:
+      - db
+      - redis
+    command: gunicorn -w ${GUNICORN_WORKERS:-4} -b 0.0.0.0:5000 wsgi:app
+    expose:
+      - "5000"
+    volumes:
+      - uploads_prod:/app/uploads
+    restart: unless-stopped
+
+  web:
+    image: nginx:1.27-alpine
+    depends_on:
+      - app
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    volumes:
+      - ./nginx/web.prod.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - default
+      - npm_proxy
+    restart: unless-stopped
+
+volumes:
+  pgdata_prod:
+  uploads_prod:
+
+networks:
+  npm_proxy:
+    external: true
+    name: ${NPM_NETWORK:-npm_proxy}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Consultorios - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Consultorios</h1>
+    <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver a admin</a>
+  </div>
+
+  <form method="post" action="{{ url_for('consultorios.editar', consultorio_id=consultorio_edit.id) if consultorio_edit else url_for('consultorios.nuevo') }}" class="inline-form">
+    {% if form %}
+      {{ form.hidden_tag() }}
+      {{ form.nombre(class_='input', placeholder='Nombre del consultorio') }}
+      {% for error in form.nombre.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      {{ form.color(class_='input') }}
+      {% for error in form.color.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      <label class="switch-inline">{{ form.activo() }} Activo</label>
+      {{ form.submit(class_='btn btn-primary') }}
+    {% else %}
+      <a class="btn btn-primary" href="{{ url_for('consultorios.nuevo') }}">+ Nuevo</a>
+    {% endif %}
+  </form>
+
+  <div class="list-wrap">
+    {% for consultorio in consultorios %}
+      <div class="list-item list-item-row">
+        <span><span class="consultorio-color-dot {{ consultorio.color_class }}"></span> <strong>{{ consultorio.nombre }}</strong></span>
+        <span>{{ 'Activo' if consultorio.activo else 'Inactivo' }}</span>
+        <a href="{{ url_for('consultorios.editar', consultorio_id=consultorio.id) }}" class="btn btn-ghost">Editar</a>
+      </div>
+    {% else %}
+      <p class="muted">No hay consultorios cargados.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

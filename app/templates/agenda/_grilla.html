@@ -1,0 +1,37 @@
+<div class="agenda-grid-wrap">
+  <table class="agenda-grid">
+    <thead>
+      <tr>
+        <th class="col-time">Hora</th>
+        {% for consultorio in consultorios %}
+          <th>{{ consultorio.nombre }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for slot in slots %}
+      <tr>
+        <td class="time-cell">{{ slot|hora_24 }}</td>
+        {% for consultorio in consultorios %}
+          {% set turno = cell_map.get((consultorio.id, slot)) %}
+          <td class="slot-cell {% if turno %}occupied{% else %}free{% endif %}">
+            {% if turno %}
+              {% if turno.start_at == slot %}
+                <a class="turno-card" href="{{ url_for('turnos.detalle', turno_id=turno.id) }}">
+                  <strong>{{ turno.paciente.apellido }}</strong>
+                  <small>{{ turno.profesional.apellido }}</small>
+                  {% with turno=turno %}{% include 'components/turno_badge.html' %}{% endwith %}
+                </a>
+              {% else %}
+                <span class="continued" aria-hidden="true"></span>
+              {% endif %}
+            {% else %}
+              <a class="new-slot" href="{{ url_for('turnos.nuevo', fecha=fecha.isoformat(), hora=slot.strftime('%H:%M'), consultorio_id=consultorio.id) }}">+</a>
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

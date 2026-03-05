@@ -1,0 +1,13 @@
+{% if ocupados %}
+  <div class="ocupados-bar">
+    <small class="ocupados-label">Ocupado en este consultorio:</small>
+    <div class="ocupados-chips">
+      {% for turno in ocupados %}
+        <span class="ocupados-chip">
+          {{ turno.start_at|hora_24 }}-{{ turno.end_at|hora_24 }}
+          <small>{{ turno.paciente.apellido }}</small>
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

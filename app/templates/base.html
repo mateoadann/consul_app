@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}ConsulApp{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <script defer src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+  <header class="topbar">
+    {% if current_user.is_authenticated %}
+      <button class="ghost-btn" id="menu-toggle" aria-label="Menu">=</button>
+    {% else %}
+      <span></span>
+    {% endif %}
+    <a href="{{ url_for('agenda.index') }}" class="app-title">ConsulApp</a>
+    <span></span>
+  </header>
+
+  {% if current_user.is_authenticated %}
+    <div id="menu-drawer" class="menu-drawer" hidden>
+      <div class="menu-drawer-header">
+        <strong>{{ current_user.nombre }}</strong>
+        <small class="muted">{{ current_user.role }}</small>
+      </div>
+      <a href="{{ url_for('auth.cambiar_password') }}" class="menu-drawer-item">Cambiar contrasena</a>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="menu-drawer-item menu-drawer-item-danger" type="submit">Cerrar sesion</button>
+      </form>
+    </div>
+  {% endif %}
+
+  <main class="page-wrap">
+    {% include 'components/flash.html' %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if current_user.is_authenticated %}
+    {% include 'components/nav_bottom.html' %}
+  {% endif %}
+</body>
+</html>

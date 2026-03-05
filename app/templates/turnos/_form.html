@@ -1,0 +1,33 @@
+{{ form.hidden_tag() }}
+
+<label>
+  {{ form.fecha.label }}
+  {{ form.fecha(class_='input') }}
+</label>
+
+<label>
+  {{ form.hora_inicio.label }}
+  {{ form.hora_inicio(class_='input') }}
+</label>
+
+<label>
+  {{ form.hora_fin.label }}
+  {{ form.hora_fin(class_='input') }}
+</label>
+
+<label>
+  {{ form.consultorio_id.label }}
+  {{ form.consultorio_id(class_='input') }}
+</label>
+
+<label>
+  {{ form.profesional_id.label }}
+  {{ form.profesional_id(class_='input') }}
+</label>
+
+<label>
+  {{ form.paciente_query.label }}
+  {{ form.paciente_query(class_='input') }}
+</label>
+
+{{ form.paciente_id(id='paciente_id') }}

@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-consul_app}
+      POSTGRES_TEST_DB: ${POSTGRES_TEST_DB:-consul_app_test}
+      POSTGRES_USER: ${POSTGRES_USER:-consul}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-consul}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  app:
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "${APP_PORT:-5002}:5000"
+    command: gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
+
+volumes:
+  pgdata:
