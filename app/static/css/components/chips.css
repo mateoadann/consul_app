@@ -1,0 +1,23 @@
+/* Chips */
+.chip {
+  border-radius: 999px;
+  border: 1px solid #cad2d8;
+  padding: 0.25rem 0.7rem;
+  background: #fff;
+}
+
+.day-chip-today {
+  min-height: 34px;
+  padding: 0.35rem 0.95rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--brand-soft);
+  box-shadow: none;
+}
+
+.day-chip-today:hover,
+.day-chip-today:focus-visible {
+  color: var(--ink);
+  background: #ececec;
+}

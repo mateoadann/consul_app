@@ -1,0 +1,73 @@
+/* Pills para consultorios */
+.consultorio-pills {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0.5rem 0;
+}
+
+.consultorio-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  background: var(--brand-soft);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.pill.is-active {
+  background: var(--brand);
+  color: #fff;
+  box-shadow: none;
+}
+
+.pill.pill-neutral.is-active {
+  background: var(--brand);
+  color: #fff;
+}
+
+.pill.consultorio-pill {
+  background: var(--consultorio-color-soft, var(--brand-soft));
+  color: var(--consultorio-color, var(--ink));
+}
+
+.pill.consultorio-pill.is-active {
+  background: var(--consultorio-color, var(--brand));
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(84, 81, 90, 0.18);
+}
+
+.pill-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--consultorio-color, #8a8790);
+}
+
+.pill-dot-neutral {
+  background: #8a8790;
+}
+
+.pill.consultorio-pill.is-active .pill-dot {
+  background: #fff;
+}
+
+@media (min-width: 860px) {
+  .consultorio-pills {
+    display: none;
+  }
+}
