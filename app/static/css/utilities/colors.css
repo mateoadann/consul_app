@@ -1,0 +1,61 @@
+/* Colores de consultorios */
+.consultorio-color-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--consultorio-color, #8a8790);
+}
+
+.cc-naranja {
+  --consultorio-color: #ea8711;
+  --consultorio-color-soft: #fef3e2;
+}
+
+.cc-turquesa {
+  --consultorio-color: #0d9488;
+  --consultorio-color-soft: #e2f6f4;
+}
+
+.cc-azul {
+  --consultorio-color: #2563eb;
+  --consultorio-color-soft: #e8f0ff;
+}
+
+.cc-verde {
+  --consultorio-color: #16a34a;
+  --consultorio-color-soft: #e6f8ee;
+}
+
+.cc-rojo {
+  --consultorio-color: #dc2626;
+  --consultorio-color-soft: #fdeaea;
+}
+
+.cc-violeta {
+  --consultorio-color: #7c3aed;
+  --consultorio-color-soft: #efe7ff;
+}
+
+.cc-terracota {
+  --consultorio-color: #c2410c;
+  --consultorio-color-soft: #fbe9e2;
+}
+
+.cc-cian {
+  --consultorio-color: #0891b2;
+  --consultorio-color-soft: #e2f7fb;
+}
+
+.cc-frambuesa {
+  --consultorio-color: #be123c;
+  --consultorio-color-soft: #fbe4ea;
+}
+
+.cc-indigo {
+  --consultorio-color: #4f46e5;
+  --consultorio-color-soft: #e9e8ff;
+}

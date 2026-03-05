@@ -1,0 +1,32 @@
+/* Badges de estado */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.badge-reservado {
+  background: rgba(234, 88, 12, 0.08);
+  color: var(--brand);
+}
+
+.badge-confirmado {
+  background: rgba(13, 148, 136, 0.08);
+  color: #0d9488;
+}
+
+.badge-atendido {
+  background: #f1f1f1;
+  color: var(--muted-soft);
+}
+
+.badge-cancelado {
+  background: #ffe2e2;
+  color: #9f1c1c;
+}
