@@ -121,6 +121,9 @@ docker-test-db: env ## Recrea DB de tests aislada en Docker
 docker-test: docker-test-db ## Ejecuta tests dentro de Docker con DB aislada (verbose)
 	$(COMPOSE) run --rm $(APP_SERVICE) sh -lc 'if [ -z "$$TEST_DATABASE_URL" ]; then echo "TEST_DATABASE_URL no esta definido"; exit 1; fi; pytest $(PYTEST_FLAGS)'
 
+test-coverage: install ## Ejecuta tests con reporte de cobertura
+	$(VENV_PYTEST) --cov=app --cov-report=html --cov-report=term $(PYTEST_FLAGS)
+
 prod-up: env ## Levanta stack de produccion (build + detached)
 	@docker network inspect $(NPM_NETWORK) >/dev/null 2>&1 || docker network create $(NPM_NETWORK)
 	$(COMPOSE_PROD) up -d --build
