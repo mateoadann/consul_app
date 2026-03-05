@@ -1,7 +1,7 @@
 import pytest
 
 from app.extensions import db
-from app.models import Profesional, User
+from app.models import Profesional
 
 
 pytestmark = pytest.mark.postgres
