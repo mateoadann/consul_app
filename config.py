@@ -35,6 +35,10 @@ class TestingConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False
     SESSION_TYPE = "filesystem"
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "TEST_DATABASE_URL",
+        os.getenv("DATABASE_URL", "postgresql+psycopg2://consul:consul@localhost:5432/consul_app_test")
+    )
 
 
 class ProductionConfig(Config):

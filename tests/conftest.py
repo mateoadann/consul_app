@@ -2,14 +2,15 @@ import os
 import pathlib
 import sys
 
-import pytest
-
+# Add project root to path before importing app modules
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app import create_app
-from app.extensions import db
+import pytest  # noqa: E402
+
+from app import create_app  # noqa: E402
+from app.extensions import db  # noqa: E402
 
 
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
@@ -31,10 +32,6 @@ def pytest_collection_modifyitems(config, items):
 @pytest.fixture
 def app():
     app = create_app("testing")
-    if TEST_DATABASE_URL:
-        app.config["SQLALCHEMY_DATABASE_URI"] = TEST_DATABASE_URL
-    app.config["SESSION_TYPE"] = "filesystem"
-    app.config["WTF_CSRF_ENABLED"] = False
 
     with app.app_context():
         if TEST_DATABASE_URL:
