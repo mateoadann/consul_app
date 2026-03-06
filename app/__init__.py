@@ -112,7 +112,7 @@ def register_security_headers(app: Flask) -> None:
             "default-src 'self'; "
             "script-src 'self' https://unpkg.com; "
             "connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
-            "style-src 'self' https://fonts.googleapis.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;"
             "font-src 'self' https://fonts.gstatic.com data:; "
             "img-src 'self' data:;"
         )
