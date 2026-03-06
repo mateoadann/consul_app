@@ -38,8 +38,10 @@
   >
     <input id="agenda-consultorio-id" type="hidden" name="consultorio_id" value="{{ consultorio_id_filter or '' }}">
     <div class="desktop-only">
+      <label for="agenda-fecha-input" class="sr-only">Fecha</label>
       <input id="agenda-fecha-input" type="date" name="fecha" value="{{ fecha.isoformat() }}" class="input">
-      <select name="profesional_id" class="input">
+      <label for="agenda-profesional-select" class="sr-only">Profesional</label>
+      <select id="agenda-profesional-select" name="profesional_id" class="input">
         <option value="">Todos</option>
         {% for profesional in profesionales %}
           <option value="{{ profesional.id }}" {% if profesional_id_filter == profesional.id and not mis_turnos %}selected{% endif %}>
