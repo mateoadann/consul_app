@@ -1,7 +1,7 @@
 import pytest
 
 from app.extensions import db
-from app.models import Profesional
+from app.models import Profesional, User
 
 
 pytestmark = pytest.mark.postgres
@@ -21,9 +21,16 @@ class TestProfesionalesIndex:
         """Admin puede ver el listado de profesionales."""
         client.post("/auth/login", data={"username": "admin_test", "password": "admin123"})
 
-        # Crear algunos profesionales para listar
-        p1 = Profesional(nombre="Ana", apellido="Garcia", activo=True)
-        p2 = Profesional(nombre="Carlos", apellido="Lopez", activo=True)
+        # Crear usuarios y profesionales vinculados (relacion 1:1 obligatoria)
+        u1 = User(username="ana_g", nombre="Ana Garcia", role="profesional")
+        u1.set_password("test123")
+        u2 = User(username="carlos_l", nombre="Carlos Lopez", role="profesional")
+        u2.set_password("test123")
+        db.session.add_all([u1, u2])
+        db.session.flush()
+
+        p1 = Profesional(nombre="Ana", apellido="Garcia", activo=True, user_id=u1.id)
+        p2 = Profesional(nombre="Carlos", apellido="Lopez", activo=True, user_id=u2.id)
         db.session.add_all([p1, p2])
         db.session.commit()
 

@@ -21,10 +21,11 @@ def get_or_create_user(username, password, role, nombre):
 
 def get_or_create_profesional(nombre, apellido, especialidad, username):
     user = User.query.filter_by(username=username).first()
-    profesional = Profesional.query.filter_by(nombre=nombre, apellido=apellido).first()
+    if not user:
+        raise ValueError(f"User '{username}' must exist before creating Profesional")
+
+    profesional = Profesional.query.filter_by(user_id=user.id).first()
     if profesional:
-        if user and profesional.user_id != user.id:
-            profesional.user_id = user.id
         return profesional
 
     profesional = Profesional(
@@ -34,7 +35,7 @@ def get_or_create_profesional(nombre, apellido, especialidad, username):
         telefono="",
         email=f"{username}@consulapp.local",
         activo=True,
-        user_id=user.id if user else None,
+        user_id=user.id,
     )
     db.session.add(profesional)
     db.session.flush()
