@@ -13,7 +13,7 @@ class Profesional(TimestampMixin, db.Model):
     email = db.Column(db.String(120), nullable=True)
     activo = db.Column(db.Boolean, nullable=False, default=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True)
 
     user = db.relationship("User", back_populates="profesional")
     consultorios = db.relationship(

@@ -20,8 +20,14 @@ def test_no_overlap_same_consultorio(client):
     user = User(username="u1", role="admin", nombre="Admin", activo=True)
     user.set_password("x")
     db.session.add(user)
+    db.session.flush()
 
-    profesional = Profesional(nombre="Ana", apellido="Medica", activo=True)
+    prof_user = User(username="ana_medica", role="profesional", nombre="Ana Medica", activo=True)
+    prof_user.set_password("x")
+    db.session.add(prof_user)
+    db.session.flush()
+
+    profesional = Profesional(nombre="Ana", apellido="Medica", activo=True, user_id=prof_user.id)
     consultorio = Consultorio(nombre="Consultorio A", activo=True)
     paciente_a = Paciente(nombre="A", apellido="Uno", dni="100", activo=True)
     paciente_b = Paciente(nombre="B", apellido="Dos", dni="101", activo=True)
