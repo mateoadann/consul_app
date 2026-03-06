@@ -1,7 +1,8 @@
-const CACHE_NAME = 'consulapp-v1';
+const CACHE_NAME = 'consulapp-v2';
 const STATIC_ASSETS = [
   '/static/css/app.css',
   '/static/js/app.js',
+  '/static/js/gestures.js',
   '/static/icons/icon-192.png',
   '/static/icons/icon-512.png',
   'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap'
