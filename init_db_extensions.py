@@ -21,9 +21,11 @@ def main():
         cur = conn.cursor()
         cur.execute("CREATE EXTENSION IF NOT EXISTS btree_gist")
         cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm")
+        # Limpiar alembic_version si quedó de un intento fallido
+        cur.execute("DROP TABLE IF EXISTS alembic_version")
         cur.close()
         conn.close()
-        print("OK: extensiones btree_gist y pg_trgm creadas")
+        print("OK: extensiones creadas, alembic_version limpiado")
     except Exception as e:
         print(f"ERROR creando extensiones: {e}")
         sys.exit(1)
