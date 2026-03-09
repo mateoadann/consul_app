@@ -9,6 +9,7 @@ from config import config_by_name
 
 from .extensions import csrf, db, login_manager, migrate, session_ext
 from .utils.formatting import (
+    format_display_name,
     format_fecha_agenda,
     format_fecha_agenda_corta,
     format_fecha_corta,
@@ -62,6 +63,7 @@ def register_blueprints(app: Flask) -> None:
     from .blueprints.agenda.routes import agenda_bp
     from .blueprints.auth.routes import auth_bp
     from .blueprints.consultorios.routes import consultorios_bp
+    from .blueprints.obra_sociales.routes import obra_sociales_bp
     from .blueprints.pacientes.routes import pacientes_bp
     from .blueprints.profesionales.routes import profesionales_bp
     from .blueprints.turnos.routes import turnos_bp
@@ -72,6 +74,7 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(pacientes_bp)
     app.register_blueprint(profesionales_bp)
     app.register_blueprint(consultorios_bp)
+    app.register_blueprint(obra_sociales_bp)
     app.register_blueprint(admin_bp)
 
 
@@ -87,6 +90,14 @@ def register_request_hooks(app: Flask) -> None:
         ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.remote_addr
         db.session.info["audit_ip"] = ip
 
+    @app.before_request
+    def load_display_name_config():
+        from flask import g
+        from .models.app_config import AppConfig
+        from .utils.formatting import FORMATO_NOMBRE_DEFAULT
+        g.fmt_paciente = AppConfig.get("formato_nombre_paciente", FORMATO_NOMBRE_DEFAULT)
+        g.fmt_profesional = AppConfig.get("formato_nombre_profesional", FORMATO_NOMBRE_DEFAULT)
+
     @app.teardown_request
     def clear_session_info(_exc):
         db.session.info.pop("audit_user_id", None)
@@ -99,6 +110,19 @@ def register_template_filters(app: Flask) -> None:
     app.jinja_env.filters["fecha_corta"] = format_fecha_corta
     app.jinja_env.filters["fecha_hora_corta"] = format_fecha_hora_corta
     app.jinja_env.filters["hora_24"] = format_hora_24
+
+    def _display_name_paciente(paciente):
+        from flask import g
+        fmt = getattr(g, "fmt_paciente", "nombre_inicial")
+        return format_display_name(paciente, fmt)
+
+    def _display_name_profesional(profesional):
+        from flask import g
+        fmt = getattr(g, "fmt_profesional", "nombre_inicial")
+        return format_display_name(profesional, fmt)
+
+    app.jinja_env.filters["display_name_paciente"] = _display_name_paciente
+    app.jinja_env.filters["display_name_profesional"] = _display_name_profesional
 
 
 def register_security_headers(app: Flask) -> None:

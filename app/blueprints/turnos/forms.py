@@ -7,7 +7,6 @@ from wtforms import (
     HiddenField,
     IntegerField,
     SelectField,
-    StringField,
     SubmitField,
     TextAreaField,
 )
@@ -35,8 +34,7 @@ class TurnoForm(FlaskForm):
     )
     consultorio_id = SelectField("Consultorio", coerce=int, validators=[DataRequired()])
     profesional_id = SelectField("Profesional", coerce=int, validators=[DataRequired()])
-    paciente_query = StringField("Paciente", validators=[DataRequired()])
-    paciente_id = HiddenField("Paciente ID", validators=[DataRequired()])
+    paciente_id = SelectField("Paciente", coerce=int, validators=[DataRequired()])
     repetir = BooleanField("Repetir")
     cada_n_semanas = IntegerField(
         "Cada N semanas",

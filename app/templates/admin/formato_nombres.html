@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Formato de Nombres - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Formato de nombres</h1>
+    <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver</a>
+  </div>
+
+  <form method="post" class="stack" style="margin-top: 1rem">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label>
+      Paciente
+      <select name="formato_paciente" class="input" id="fmt-paciente">
+        {% for key, label in options.items() %}
+          <option value="{{ key }}" {% if key == current_paciente %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="preview-box" id="preview-paciente"></div>
+
+    <label>
+      Profesional
+      <select name="formato_profesional" class="input" id="fmt-profesional">
+        {% for key, label in options.items() %}
+          <option value="{{ key }}" {% if key == current_profesional %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="preview-box" id="preview-profesional"></div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</section>
+<script src="{{ url_for('static', filename='js/formato-nombres.js') }}"></script>
+{% endblock %}

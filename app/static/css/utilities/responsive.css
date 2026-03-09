@@ -21,7 +21,15 @@
   display: none;
 }
 
+.hidden-mobile {
+  display: none;
+}
+
 @media (min-width: 860px) {
+  .hidden-mobile {
+    display: inline-flex;
+  }
+
   .mobile-only {
     display: none;
   }

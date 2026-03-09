@@ -35,6 +35,10 @@ def _populate_turno_choices(form: TurnoForm):
         (p.id, f"Dr./Dra. {p.apellido}, {p.nombre}")
         for p in Profesional.query.filter_by(activo=True).order_by(Profesional.apellido, Profesional.nombre).all()
     ]
+    form.paciente_id.choices = [
+        (p.id, f"{p.apellido}, {p.nombre} - DNI {p.dni}")
+        for p in Paciente.query.filter_by(activo=True).order_by(Paciente.apellido, Paciente.nombre).all()
+    ]
 
 
 def _default_profesional_id():
@@ -64,10 +68,7 @@ def _fill_form_from_turno(form: TurnoForm, turno: Turno):
     form.hora_fin.data = turno.end_at.strftime("%H:%M")
     form.consultorio_id.data = turno.consultorio_id
     form.profesional_id.data = turno.profesional_id
-    form.paciente_id.data = str(turno.paciente_id)
-    form.paciente_query.data = (
-        f"{turno.paciente.apellido}, {turno.paciente.nombre} - DNI {turno.paciente.dni}"
-    )
+    form.paciente_id.data = turno.paciente_id
 
 
 def _assign_turno_from_form(turno: Turno, form: TurnoForm, paciente_id: int, start_at, end_at):
@@ -363,21 +364,10 @@ def nuevo():
 
     alternatives = []
     if form.validate_on_submit():
-        try:
-            paciente_id = int(form.paciente_id.data)
-        except (TypeError, ValueError):
-            form.paciente_query.errors.append("Selecciona un paciente valido.")
-            return render_template(
-                "turnos/nuevo.html",
-                form=form,
-                alternatives=alternatives,
-                is_edit=False,
-                allow_recurrencia=True,
-            ), 422
-
+        paciente_id = form.paciente_id.data
         paciente = Paciente.query.get(paciente_id)
         if not paciente:
-            form.paciente_query.errors.append("Selecciona un paciente existente.")
+            form.paciente_id.errors.append("Selecciona un paciente existente.")
             return render_template(
                 "turnos/nuevo.html",
                 form=form,
@@ -537,25 +527,10 @@ def editar(turno_id):
                 422,
             )
 
-        try:
-            paciente_id = int(form.paciente_id.data)
-        except (TypeError, ValueError):
-            form.paciente_query.errors.append("Selecciona un paciente valido.")
-            return (
-                render_template(
-                    "turnos/nuevo.html",
-                    form=form,
-                    alternatives=alternatives,
-                    is_edit=True,
-                    turno=turno,
-                    allow_recurrencia=False,
-                ),
-                422,
-            )
-
+        paciente_id = form.paciente_id.data
         paciente = Paciente.query.get(paciente_id)
         if not paciente:
-            form.paciente_query.errors.append("Selecciona un paciente existente.")
+            form.paciente_id.errors.append("Selecciona un paciente existente.")
             return (
                 render_template(
                     "turnos/nuevo.html",

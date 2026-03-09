@@ -1,11 +1,15 @@
+import csv
+import io
+
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy import or_
 
 from app.extensions import db
-from app.models import Paciente, Turno
+from app.models import ObraSocial, Paciente, Turno
+from app.utils.decorators import role_required
 
-from .forms import PacienteForm
+from .forms import ImportarCSVForm, PacienteForm
 
 
 pacientes_bp = Blueprint("pacientes", __name__, url_prefix="/pacientes")
@@ -36,6 +40,81 @@ def lista():
     return render_template("pacientes/lista.html", pagination=pagination, q=q)
 
 
+@pacientes_bp.route("/importar", methods=["GET", "POST"])
+@login_required
+@role_required("admin")
+def importar():
+    form = ImportarCSVForm()
+    resultados = None
+
+    if form.validate_on_submit():
+        archivo = form.archivo.data
+        stream = io.StringIO(archivo.stream.read().decode("utf-8-sig"))
+        reader = csv.DictReader(stream)
+
+        creados = 0
+        saltados = 0
+        errores = []
+
+        obra_social_ids = {os.id for os in ObraSocial.query.all()}
+
+        for i, row in enumerate(reader, start=2):
+            nombre = (row.get("nombre") or "").strip()
+            apellido = (row.get("apellido") or "").strip()
+            dni = (row.get("dni") or "").strip()
+
+            if not nombre or not apellido or not dni:
+                errores.append(f"Fila {i}: nombre, apellido y dni son obligatorios")
+                continue
+
+            if Paciente.query.filter_by(dni=dni).first():
+                saltados += 1
+                continue
+
+            telefono = (row.get("telefono") or "").strip() or None
+            apodo = (row.get("apodo") or "").strip() or None
+            notas = (row.get("notas") or "").strip() or None
+
+            numero_afiliado = None
+            raw_nro = (row.get("numero_afiliado") or "").strip()
+            if raw_nro:
+                if raw_nro.isdigit():
+                    numero_afiliado = int(raw_nro)
+                else:
+                    errores.append(f"Fila {i}: numero_afiliado debe ser numerico")
+                    continue
+
+            obra_social_id = None
+            raw_os = (row.get("obra_social_id") or "").strip()
+            if raw_os:
+                if raw_os.isdigit() and int(raw_os) in obra_social_ids:
+                    obra_social_id = int(raw_os)
+                else:
+                    errores.append(f"Fila {i}: obra_social_id '{raw_os}' no existe")
+                    continue
+
+            paciente = Paciente(
+                nombre=nombre,
+                apellido=apellido,
+                dni=dni,
+                telefono=telefono,
+                apodo=apodo,
+                numero_afiliado=numero_afiliado,
+                obra_social_id=obra_social_id,
+                notas=notas,
+                activo=True,
+            )
+            db.session.add(paciente)
+            creados += 1
+
+        if creados > 0:
+            db.session.commit()
+
+        resultados = {"creados": creados, "saltados": saltados, "errores": errores}
+
+    return render_template("pacientes/importar.html", form=form, resultados=resultados)
+
+
 @pacientes_bp.route("/nuevo", methods=["GET", "POST"])
 @login_required
 def nuevo():
@@ -51,8 +130,9 @@ def nuevo():
             apellido=form.apellido.data.strip(),
             dni=form.dni.data.strip(),
             telefono=form.telefono.data.strip() if form.telefono.data else None,
-            email=form.email.data.strip() if form.email.data else None,
-            obra_social=form.obra_social.data.strip() if form.obra_social.data else None,
+            apodo=form.apodo.data.strip() if form.apodo.data else None,
+            numero_afiliado=form.numero_afiliado.data or None,
+            obra_social_id=form.obra_social_id.data or None,
             notas=form.notas.data.strip() if form.notas.data else None,
             activo=form.activo.data,
         )
@@ -96,8 +176,9 @@ def editar(paciente_id):
         paciente.apellido = form.apellido.data.strip()
         paciente.dni = form.dni.data.strip()
         paciente.telefono = form.telefono.data.strip() if form.telefono.data else None
-        paciente.email = form.email.data.strip() if form.email.data else None
-        paciente.obra_social = form.obra_social.data.strip() if form.obra_social.data else None
+        paciente.apodo = form.apodo.data.strip() if form.apodo.data else None
+        paciente.numero_afiliado = form.numero_afiliado.data or None
+        paciente.obra_social_id = form.obra_social_id.data or None
         paciente.notas = form.notas.data.strip() if form.notas.data else None
         paciente.activo = form.activo.data
         db.session.commit()

@@ -10,8 +10,9 @@
   <dl class="detail-grid">
     <dt>DNI</dt><dd>{{ paciente.dni }}</dd>
     <dt>Telefono</dt><dd>{{ paciente.telefono or '-' }}</dd>
-    <dt>Email</dt><dd>{{ paciente.email or '-' }}</dd>
-    <dt>Obra social</dt><dd>{{ paciente.obra_social or '-' }}</dd>
+    <dt>Apodo</dt><dd>{{ paciente.apodo or '-' }}</dd>
+    <dt>Nro. afiliado</dt><dd>{{ paciente.numero_afiliado or '-' }}</dd>
+    <dt>Obra social</dt><dd>{{ paciente.obra_social.nombre if paciente.obra_social else '-' }}</dd>
   </dl>
 
   <h2>Ultimos turnos</h2>

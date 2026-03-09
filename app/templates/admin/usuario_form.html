@@ -29,6 +29,12 @@
     </label>
 
     <label>
+      {{ form.apodo.label }}
+      {{ form.apodo(class_='input', placeholder='Opcional') }}
+      {% for error in form.apodo.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </label>
+
+    <label>
       {{ form.role.label }}
       {{ form.role(class_='input') }}
       {% for error in form.role.errors %}<small class="field-error">{{ error }}</small>{% endfor %}

@@ -5,7 +5,7 @@
       {% for turno in ocupados %}
         <span class="ocupados-chip">
           {{ turno.start_at|hora_24 }}-{{ turno.end_at|hora_24 }}
-          <small>{{ turno.paciente.apellido }}</small>
+          <small>{{ turno.paciente|display_name_paciente }}</small>
         </span>
       {% endfor %}
     </div>

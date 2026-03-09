@@ -2,8 +2,9 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 
 from app.extensions import db
-from app.models import Profesional, TurnoAudit, TurnoSerieLog, User
+from app.models import AppConfig, Profesional, TurnoAudit, TurnoSerieLog, User
 from app.utils.decorators import role_required
+from app.utils.formatting import FORMATO_NOMBRE_OPTIONS, FORMATO_NOMBRE_DEFAULT
 
 from .forms import ResetPasswordForm, UsuarioEditForm, UsuarioForm
 
@@ -52,6 +53,7 @@ def nuevo_usuario():
             profesional = Profesional(
                 nombre=form.nombre.data.strip(),
                 apellido=form.apellido.data.strip(),
+                apodo=form.apodo.data.strip() if form.apodo.data else None,
                 user_id=user.id,
             )
             db.session.add(profesional)
@@ -73,6 +75,7 @@ def editar_usuario(user_id):
     if request.method == "GET" and user.profesional:
         form.nombre.data = user.profesional.nombre
         form.apellido.data = user.profesional.apellido
+        form.apodo.data = user.profesional.apodo
 
     if request.method == "GET" and not user.profesional:
         form.apellido.data = ""
@@ -99,6 +102,7 @@ def editar_usuario(user_id):
         if user.profesional:
             user.profesional.nombre = form.nombre.data.strip()
             user.profesional.apellido = form.apellido.data.strip()
+            user.profesional.apodo = form.apodo.data.strip() if form.apodo.data else None
 
         db.session.commit()
         flash("Usuario actualizado.", "success")
@@ -147,3 +151,31 @@ def series_logs():
         error_out=False,
     )
     return render_template("admin/series.html", logs=logs)
+
+
+@admin_bp.route("/formato-nombres", methods=["GET", "POST"])
+@login_required
+@role_required("admin")
+def formato_nombres():
+    if request.method == "POST":
+        fmt_paciente = request.form.get("formato_paciente", FORMATO_NOMBRE_DEFAULT)
+        fmt_profesional = request.form.get("formato_profesional", FORMATO_NOMBRE_DEFAULT)
+
+        if fmt_paciente in FORMATO_NOMBRE_OPTIONS:
+            AppConfig.set("formato_nombre_paciente", fmt_paciente)
+        if fmt_profesional in FORMATO_NOMBRE_OPTIONS:
+            AppConfig.set("formato_nombre_profesional", fmt_profesional)
+
+        db.session.commit()
+        flash("Formato de nombres actualizado.", "success")
+        return redirect(url_for("admin.formato_nombres"))
+
+    current_paciente = AppConfig.get("formato_nombre_paciente", FORMATO_NOMBRE_DEFAULT)
+    current_profesional = AppConfig.get("formato_nombre_profesional", FORMATO_NOMBRE_DEFAULT)
+
+    return render_template(
+        "admin/formato_nombres.html",
+        options=FORMATO_NOMBRE_OPTIONS,
+        current_paciente=current_paciente,
+        current_profesional=current_profesional,
+    )
