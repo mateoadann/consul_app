@@ -17,7 +17,7 @@
                 {% with turno=turno %}{% include 'components/turno_badge.html' %}{% endwith %}
               </div>
               <strong>
-                {{ turno.paciente.apellido }}{% if not consultorio_id_filter %} · {{ turno.profesional.apellido }}{% endif %}
+                {{ turno.paciente|display_name_paciente }}{% if not consultorio_id_filter %} · {{ turno.profesional|display_name_profesional }}{% endif %}
               </strong>
               <small class="timeline-meta">{{ turno.start_at|hora_24 }}-{{ turno.end_at|hora_24 }}</small>
             </a>
