@@ -1,11 +1,15 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+import csv
+import io
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy import or_
 
 from app.extensions import db
-from app.models import Paciente, Turno
+from app.models import ObraSocial, Paciente, Turno
+from app.utils.decorators import role_required
 
-from .forms import PacienteForm
+from .forms import ImportarCSVForm, PacienteForm
 
 
 pacientes_bp = Blueprint("pacientes", __name__, url_prefix="/pacientes")
@@ -34,6 +38,81 @@ def lista():
         error_out=False,
     )
     return render_template("pacientes/lista.html", pagination=pagination, q=q)
+
+
+@pacientes_bp.route("/importar", methods=["GET", "POST"])
+@login_required
+@role_required("admin")
+def importar():
+    form = ImportarCSVForm()
+    resultados = None
+
+    if form.validate_on_submit():
+        archivo = form.archivo.data
+        stream = io.StringIO(archivo.stream.read().decode("utf-8-sig"))
+        reader = csv.DictReader(stream)
+
+        creados = 0
+        saltados = 0
+        errores = []
+
+        obra_social_ids = {os.id for os in ObraSocial.query.all()}
+
+        for i, row in enumerate(reader, start=2):
+            nombre = (row.get("nombre") or "").strip()
+            apellido = (row.get("apellido") or "").strip()
+            dni = (row.get("dni") or "").strip()
+
+            if not nombre or not apellido or not dni:
+                errores.append(f"Fila {i}: nombre, apellido y dni son obligatorios")
+                continue
+
+            if Paciente.query.filter_by(dni=dni).first():
+                saltados += 1
+                continue
+
+            telefono = (row.get("telefono") or "").strip() or None
+            apodo = (row.get("apodo") or "").strip() or None
+            notas = (row.get("notas") or "").strip() or None
+
+            numero_afiliado = None
+            raw_nro = (row.get("numero_afiliado") or "").strip()
+            if raw_nro:
+                if raw_nro.isdigit():
+                    numero_afiliado = int(raw_nro)
+                else:
+                    errores.append(f"Fila {i}: numero_afiliado debe ser numerico")
+                    continue
+
+            obra_social_id = None
+            raw_os = (row.get("obra_social_id") or "").strip()
+            if raw_os:
+                if raw_os.isdigit() and int(raw_os) in obra_social_ids:
+                    obra_social_id = int(raw_os)
+                else:
+                    errores.append(f"Fila {i}: obra_social_id '{raw_os}' no existe")
+                    continue
+
+            paciente = Paciente(
+                nombre=nombre,
+                apellido=apellido,
+                dni=dni,
+                telefono=telefono,
+                apodo=apodo,
+                numero_afiliado=numero_afiliado,
+                obra_social_id=obra_social_id,
+                notas=notas,
+                activo=True,
+            )
+            db.session.add(paciente)
+            creados += 1
+
+        if creados > 0:
+            db.session.commit()
+
+        resultados = {"creados": creados, "saltados": saltados, "errores": errores}
+
+    return render_template("pacientes/importar.html", form=form, resultados=resultados)
 
 
 @pacientes_bp.route("/nuevo", methods=["GET", "POST"])

@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed, FileField, FileRequired
 from wtforms import BooleanField, IntegerField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
@@ -22,3 +23,8 @@ class PacienteForm(FlaskForm):
             (os.id, os.nombre) for os in ObraSocial.query.order_by(ObraSocial.nombre).all()
         ]
         self.obra_social_id.choices = choices
+
+
+class ImportarCSVForm(FlaskForm):
+    archivo = FileField("Archivo CSV", validators=[FileRequired(), FileAllowed(["csv"], "Solo archivos CSV")])
+    submit = SubmitField("Importar")
