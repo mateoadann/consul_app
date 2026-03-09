@@ -20,7 +20,7 @@ PYTEST_FLAGS ?= -vv -rA
 .PHONY: help env venv install run seed-local test test-postgres clean-pyc \
 	up up-build down restart logs ps shell db-init db-upgrade db-migrate db-bootstrap \
 	seed docker-test docker-test-db docker-db-upgrade prod-up prod-down prod-restart \
-	prod-logs prod-ps prod-shell prod-db-upgrade
+	prod-logs prod-ps prod-shell prod-db-upgrade deploy backup-auto backup-manual
 
 help: ## Muestra esta ayuda
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUso:\n  make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*?##/ {printf "  %-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -160,3 +160,13 @@ prod-db-upgrade: env ## Aplica migraciones en stack de produccion
 		$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py db stamp head; \
 	fi
 	$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py ensure-admin
+
+# ── Deploy & Backups ──────────────────────────────
+deploy: ## Ejecuta deploy completo en el VPS
+	bash scripts/deploy.sh
+
+backup-auto: ## Ejecuta backup automatico de la DB (produccion)
+	bash scripts/backup-db.sh auto
+
+backup-manual: ## Ejecuta backup manual/pre-deploy de la DB (produccion)
+	bash scripts/backup-db.sh manual
