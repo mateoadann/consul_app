@@ -30,7 +30,7 @@ log "Building and starting containers..."
 log "Waiting for database to be ready..."
 TRIES=0
 MAX_TRIES=60
-until "${COMPOSE[@]}" exec -T db pg_isready -U postgres >/dev/null 2>&1; do
+until "${COMPOSE[@]}" exec -T db sh -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"' >/dev/null 2>&1; do
   TRIES=$((TRIES + 1))
   if [[ "$TRIES" -ge "$MAX_TRIES" ]]; then
     log "ERROR: Database not ready after ${MAX_TRIES}s, aborting"
@@ -45,9 +45,16 @@ log "Ensuring PostgreSQL extensions..."
 "${COMPOSE[@]}" exec -T db sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"'
 "${COMPOSE[@]}" exec -T db sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"'
 
-# --- 6. Run database migrations ---
-log "Running database migrations..."
-"${COMPOSE[@]}" exec -T app flask --app wsgi.py db upgrade
+# --- 6. Run database migrations (bootstrap if fresh DB) ---
+ALEMBIC_TABLE=$("${COMPOSE[@]}" exec -T db sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT to_regclass('\''alembic_version'\'')"' | tr -d '[:space:]')
+if [[ "$ALEMBIC_TABLE" == "alembic_version" ]]; then
+  log "Running database migrations..."
+  "${COMPOSE[@]}" exec -T app flask --app wsgi.py db upgrade
+else
+  log "Fresh database detected: bootstrapping schema + stamp head..."
+  "${COMPOSE[@]}" exec -T app python -c 'from app import create_app; from app.extensions import db; import app.models; a=create_app("production"); ctx=a.app_context(); ctx.push(); db.create_all(); ctx.pop()'
+  "${COMPOSE[@]}" exec -T app flask --app wsgi.py db stamp head
+fi
 
 # --- 7. Ensure admin user exists ---
 log "Ensuring admin user..."
