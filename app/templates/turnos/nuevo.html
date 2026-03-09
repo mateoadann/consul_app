@@ -67,23 +67,10 @@
     </label>
 
     <label>
-      {{ form.paciente_query.label }}
-      {{ form.paciente_query(
-          class_='input',
-          autocomplete='off',
-          placeholder='Buscar paciente...',
-          **{
-            'hx-get': url_for('pacientes.buscar_htmx'),
-            'hx-trigger': 'keyup changed delay:300ms',
-            'hx-target': '#paciente-results',
-            'hx-include': '[name="paciente_query"]'
-          }
-      ) }}
-      {% for error in form.paciente_query.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      {{ form.paciente_id.label }}
+      {{ form.paciente_id(class_='input') }}
+      {% for error in form.paciente_id.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
     </label>
-
-    {{ form.paciente_id(id='paciente_id') }}
-    <div id="paciente-results" class="search-suggestions"></div>
 
     {% if allow_recurrencia %}
       <label class="switch-inline">

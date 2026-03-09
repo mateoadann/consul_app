@@ -1,7 +1,7 @@
 /* Page wrapper */
 .page-wrap {
   padding: 0.9rem;
-  padding-bottom: 5.5rem;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
   max-width: 960px;
   margin: 0 auto;
 }

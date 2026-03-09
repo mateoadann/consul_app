@@ -1,12 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, SelectField, StringField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, Optional
 
 
 class UsuarioForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(3, 50)])
     nombre = StringField("Nombre", validators=[DataRequired(), Length(1, 100)])
     apellido = StringField("Apellido", validators=[DataRequired(), Length(1, 100)])
+    apodo = StringField("Apodo", validators=[Optional(), Length(max=100)])
     role = SelectField(
         "Rol",
         choices=[("profesional", "Profesional"), ("admin", "Admin")],
@@ -21,6 +22,7 @@ class UsuarioEditForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(3, 50)])
     nombre = StringField("Nombre", validators=[DataRequired(), Length(1, 100)])
     apellido = StringField("Apellido", validators=[DataRequired(), Length(1, 100)])
+    apodo = StringField("Apodo", validators=[Optional(), Length(max=100)])
     role = SelectField(
         "Rol",
         choices=[("profesional", "Profesional"), ("admin", "Admin")],

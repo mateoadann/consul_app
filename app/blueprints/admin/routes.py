@@ -53,6 +53,7 @@ def nuevo_usuario():
             profesional = Profesional(
                 nombre=form.nombre.data.strip(),
                 apellido=form.apellido.data.strip(),
+                apodo=form.apodo.data.strip() if form.apodo.data else None,
                 user_id=user.id,
             )
             db.session.add(profesional)
@@ -74,6 +75,7 @@ def editar_usuario(user_id):
     if request.method == "GET" and user.profesional:
         form.nombre.data = user.profesional.nombre
         form.apellido.data = user.profesional.apellido
+        form.apodo.data = user.profesional.apodo
 
     if request.method == "GET" and not user.profesional:
         form.apellido.data = ""
@@ -100,6 +102,7 @@ def editar_usuario(user_id):
         if user.profesional:
             user.profesional.nombre = form.nombre.data.strip()
             user.profesional.apellido = form.apellido.data.strip()
+            user.profesional.apodo = form.apodo.data.strip() if form.apodo.data else None
 
         db.session.commit()
         flash("Usuario actualizado.", "success")

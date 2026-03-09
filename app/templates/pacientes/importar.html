@@ -7,11 +7,12 @@
     <a class="btn btn-ghost" href="{{ url_for('pacientes.lista') }}">Volver</a>
   </div>
 
-  <form method="post" enctype="multipart/form-data" class="stack">
+  <form method="post" enctype="multipart/form-data" class="stack" style="margin-top: 1rem">
     {{ form.hidden_tag() }}
     <label>{{ form.archivo.label }} {{ form.archivo(class_='input') }}</label>
     {% for error in form.archivo.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
-    <p class="muted">Formato: nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo</p>
+    <p class="muted" style="font-size: 0.8rem">Columnas CSV:</p>
+    <p class="muted" style="font-size: 0.75rem; font-family: var(--font-mono); line-height: 1.6">nombre, apellido, dni, telefono,<br>numero_afiliado, obra_social_id,<br>notas, apodo</p>
     {{ form.submit(class_='btn btn-primary') }}
   </form>
 
