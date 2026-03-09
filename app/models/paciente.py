@@ -10,11 +10,13 @@ class Paciente(TimestampMixin, db.Model):
     apellido = db.Column(db.String(100), nullable=False)
     dni = db.Column(db.String(15), nullable=False, unique=True)
     telefono = db.Column(db.String(50), nullable=True)
-    email = db.Column(db.String(120), nullable=True)
-    obra_social = db.Column(db.String(100), nullable=True)
+    apodo = db.Column(db.String(100), nullable=True)
+    numero_afiliado = db.Column(db.Integer, nullable=True)
+    obra_social_id = db.Column(db.Integer, db.ForeignKey("obra_sociales.id"), nullable=True)
     notas = db.Column(db.Text, nullable=True)
     activo = db.Column(db.Boolean, nullable=False, default=True)
 
+    obra_social = db.relationship("ObraSocial", back_populates="pacientes")
     turnos = db.relationship("Turno", back_populates="paciente", lazy="dynamic")
 
     @property
