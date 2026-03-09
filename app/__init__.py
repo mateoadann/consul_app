@@ -62,6 +62,7 @@ def register_blueprints(app: Flask) -> None:
     from .blueprints.agenda.routes import agenda_bp
     from .blueprints.auth.routes import auth_bp
     from .blueprints.consultorios.routes import consultorios_bp
+    from .blueprints.obra_sociales.routes import obra_sociales_bp
     from .blueprints.pacientes.routes import pacientes_bp
     from .blueprints.profesionales.routes import profesionales_bp
     from .blueprints.turnos.routes import turnos_bp
@@ -72,6 +73,7 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(pacientes_bp)
     app.register_blueprint(profesionales_bp)
     app.register_blueprint(consultorios_bp)
+    app.register_blueprint(obra_sociales_bp)
     app.register_blueprint(admin_bp)
 
 

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Obras Sociales - ConsulApp{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-header-row">
+    <h1>Obras Sociales</h1>
+    <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver a admin</a>
+  </div>
+
+  <form method="post" action="{{ url_for('obra_sociales.editar', obra_social_id=item_edit.id) if item_edit else url_for('obra_sociales.nuevo') }}" class="inline-form">
+    {{ form.hidden_tag() }}
+    {{ form.nombre(class_='input', placeholder='Nombre de la obra social') }}
+    {% for error in form.nombre.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    {{ form.submit(class_='btn btn-primary') }}
+  </form>
+
+  <div class="list-wrap">
+    {% for item in items %}
+      <div class="list-item list-item-row">
+        <strong>{{ item.nombre }}</strong>
+        <div>
+          <a href="{{ url_for('obra_sociales.editar', obra_social_id=item.id) }}" class="btn btn-ghost">Editar</a>
+          <form method="post" action="{{ url_for('obra_sociales.eliminar', obra_social_id=item.id) }}" style="display:inline"
+                onsubmit="return confirm('Eliminar esta obra social?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-ghost" type="submit">Eliminar</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <p class="muted">No hay obras sociales cargadas.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

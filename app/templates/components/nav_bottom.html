@@ -2,7 +2,7 @@
 {% set is_agenda = endpoint.startswith('agenda.') %}
 {% set is_pacientes = endpoint.startswith('pacientes.') %}
 {% set is_turnos = endpoint.startswith('turnos.') %}
-{% set is_admin = endpoint.startswith('admin.') or endpoint.startswith('consultorios.') or endpoint.startswith('profesionales.') %}
+{% set is_admin = endpoint.startswith('admin.') or endpoint.startswith('consultorios.') or endpoint.startswith('profesionales.') or endpoint.startswith('obra_sociales.') %}
 <nav class="bottom-nav {% if current_user.role == 'admin' %}bottom-nav-admin{% endif %}" aria-label="Navegacion principal">
   <a href="{{ url_for('agenda.index') }}" class="{% if is_agenda %}is-active{% endif %}" {% if is_agenda %}aria-current="page"{% endif %}>
     <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
