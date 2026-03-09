@@ -29,8 +29,9 @@
     {% for error in form.dni.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
 
     <label>{{ form.telefono.label }} {{ form.telefono(class_='input') }}</label>
-    <label>{{ form.email.label }} {{ form.email(class_='input') }}</label>
-    <label>{{ form.obra_social.label }} {{ form.obra_social(class_='input') }}</label>
+    <label>{{ form.apodo.label }} {{ form.apodo(class_='input') }}</label>
+    <label>{{ form.numero_afiliado.label }} {{ form.numero_afiliado(class_='input', type='number') }}</label>
+    <label>{{ form.obra_social_id.label }} {{ form.obra_social_id(class_='input') }}</label>
     <label>{{ form.notas.label }} {{ form.notas(class_='input', rows='4') }}</label>
     <label class="switch-inline">{{ form.activo() }} Activo</label>
 

@@ -51,8 +51,9 @@ def nuevo():
             apellido=form.apellido.data.strip(),
             dni=form.dni.data.strip(),
             telefono=form.telefono.data.strip() if form.telefono.data else None,
-            email=form.email.data.strip() if form.email.data else None,
-            obra_social=form.obra_social.data.strip() if form.obra_social.data else None,
+            apodo=form.apodo.data.strip() if form.apodo.data else None,
+            numero_afiliado=form.numero_afiliado.data or None,
+            obra_social_id=form.obra_social_id.data or None,
             notas=form.notas.data.strip() if form.notas.data else None,
             activo=form.activo.data,
         )
@@ -96,8 +97,9 @@ def editar(paciente_id):
         paciente.apellido = form.apellido.data.strip()
         paciente.dni = form.dni.data.strip()
         paciente.telefono = form.telefono.data.strip() if form.telefono.data else None
-        paciente.email = form.email.data.strip() if form.email.data else None
-        paciente.obra_social = form.obra_social.data.strip() if form.obra_social.data else None
+        paciente.apodo = form.apodo.data.strip() if form.apodo.data else None
+        paciente.numero_afiliado = form.numero_afiliado.data or None
+        paciente.obra_social_id = form.obra_social_id.data or None
         paciente.notas = form.notas.data.strip() if form.notas.data else None
         paciente.activo = form.activo.data
         db.session.commit()
