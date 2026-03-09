@@ -1,0 +1,59 @@
+/* Botones */
+.btn {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease,
+    color 0.16s ease;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background: var(--brand-hover);
+  transform: none;
+}
+
+.btn-ghost {
+  background: var(--brand-soft);
+  color: var(--ink);
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  background: #ececec;
+  transform: none;
+}
+
+.ghost-btn {
+  min-height: 38px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.16s ease, background-color 0.16s ease;
+}
+
+.ghost-btn:hover,
+.ghost-btn:focus-visible {
+  background: #fde8c6;
+  transform: translateY(-1px);
+}
+
+.btn-lg {
+  width: 100%;
+}

@@ -104,6 +104,7 @@ db-bootstrap: env ## Inicializa extensiones y aplica migraciones (dev)
 		$(COMPOSE) exec $(APP_SERVICE) python -c 'from app import create_app; from app.extensions import db; import app.models; app=create_app(); ctx=app.app_context(); ctx.push(); db.create_all(); ctx.pop()'; \
 		$(COMPOSE) exec $(APP_SERVICE) flask --app wsgi.py db stamp head; \
 	fi
+	$(COMPOSE) exec $(APP_SERVICE) flask --app wsgi.py ensure-admin
 
 docker-db-upgrade: db-bootstrap ## Alias: migraciones en Docker dev
 
@@ -120,6 +121,9 @@ docker-test-db: env ## Recrea DB de tests aislada en Docker
 
 docker-test: docker-test-db ## Ejecuta tests dentro de Docker con DB aislada (verbose)
 	$(COMPOSE) run --rm $(APP_SERVICE) sh -lc 'if [ -z "$$TEST_DATABASE_URL" ]; then echo "TEST_DATABASE_URL no esta definido"; exit 1; fi; pytest $(PYTEST_FLAGS)'
+
+test-coverage: install ## Ejecuta tests con reporte de cobertura
+	$(VENV_PYTEST) --cov=app --cov-report=html --cov-report=term $(PYTEST_FLAGS)
 
 prod-up: env ## Levanta stack de produccion (build + detached)
 	@docker network inspect $(NPM_NETWORK) >/dev/null 2>&1 || docker network create $(NPM_NETWORK)
@@ -155,3 +159,4 @@ prod-db-upgrade: env ## Aplica migraciones en stack de produccion
 		$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) python -c 'from app import create_app; from app.extensions import db; import app.models; app=create_app("production"); ctx=app.app_context(); ctx.push(); db.create_all(); ctx.pop()'; \
 		$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py db stamp head; \
 	fi
+	$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py ensure-admin

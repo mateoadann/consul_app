@@ -1,0 +1,151 @@
+/* Agenda */
+.agenda-header .day-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.agenda-header .day-nav-center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.agenda-header .day-nav-center strong {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.agenda-header .day-nav > .btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 0.25rem 0.45rem;
+  min-height: auto;
+}
+
+.agenda-header .day-nav > .btn-ghost:hover,
+.agenda-header .day-nav > .btn-ghost:focus-visible {
+  background: transparent;
+  color: var(--ink);
+}
+
+.agenda-header .filters {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.agenda-header .filters .desktop-only {
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (min-width: 860px) {
+  .agenda-header .filters .desktop-only {
+    grid-template-columns: 180px 1fr auto;
+    align-items: center;
+  }
+}
+
+/* Agenda grid (tabla) */
+.agenda-grid-wrap {
+  overflow: auto;
+  border-radius: var(--radius-xl);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.agenda-grid {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+}
+
+.agenda-grid th,
+.agenda-grid td {
+  border-bottom: 1px solid #efeae3;
+  border-right: 1px solid #efeae3;
+  padding: 0.2rem;
+  min-width: 130px;
+  vertical-align: top;
+}
+
+.agenda-grid th {
+  background: #faf8f5;
+}
+
+.agenda-grid .col-time,
+.agenda-grid .time-cell {
+  min-width: 70px;
+  position: sticky;
+  left: 0;
+  background: #faf8f5;
+  z-index: 2;
+}
+
+.agenda-grid .time-cell {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-soft);
+}
+
+.slot-cell {
+  min-height: 52px;
+}
+
+.new-slot {
+  display: inline-flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--line-soft);
+  border-radius: 14px;
+  color: var(--muted-soft);
+  font-weight: 700;
+  font-size: 14px;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.new-slot:hover,
+.new-slot:focus-visible {
+  background: #f8f8f8;
+  border-color: var(--line-soft);
+}
+
+/* Ocupados bar */
+.ocupados-bar {
+  padding: 0.5rem 0;
+}
+
+.ocupados-label {
+  color: var(--muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.ocupados-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.ocupados-chip {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  padding: 0.25rem 0.5rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ocupados-chip small {
+  color: #b91c1c;
+  margin-left: 0.2rem;
+}

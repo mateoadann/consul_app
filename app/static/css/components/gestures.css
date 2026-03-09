@@ -1,0 +1,126 @@
+/* Mobile Gesture Indicators */
+
+/* === Swipe Indicator === */
+.swipe-indicator {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background: var(--brand);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.swipe-indicator.is-visible {
+  opacity: 1;
+}
+
+.swipe-indicator.is-left {
+  left: 16px;
+}
+
+.swipe-indicator.is-right {
+  right: 16px;
+}
+
+.swipe-indicator-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.swipe-indicator.is-left .swipe-indicator-arrow {
+  border-width: 8px 12px 8px 0;
+  border-color: transparent #fff transparent transparent;
+  margin-right: 2px;
+}
+
+.swipe-indicator.is-right .swipe-indicator-arrow {
+  border-width: 8px 0 8px 12px;
+  border-color: transparent transparent transparent #fff;
+  margin-left: 2px;
+}
+
+/* === Pull-to-Refresh Indicator === */
+.pull-indicator {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.pull-indicator.is-visible {
+  opacity: 1;
+}
+
+.pull-indicator-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--line);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  transition: transform 0.1s linear;
+}
+
+.pull-indicator.is-ready .pull-indicator-spinner {
+  border-color: var(--brand);
+  border-top-color: transparent;
+}
+
+.pull-indicator.is-refreshing .pull-indicator-spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+.pull-indicator-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.pull-indicator.is-ready .pull-indicator-text {
+  color: var(--brand);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* === Touch Feedback === */
+@media (pointer: coarse) {
+  .agenda-grid-wrap {
+    touch-action: pan-y;
+  }
+
+  #grilla-container {
+    position: relative;
+    overflow: visible;
+  }
+}
+
+/* Desktop: hide gesture indicators */
+@media (pointer: fine) {
+  .swipe-indicator,
+  .pull-indicator {
+    display: none;
+  }
+}

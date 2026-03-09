@@ -6,15 +6,17 @@
     <h1>Profesionales</h1>
     <div class="card-header-actions">
       <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Volver a admin</a>
-      <a href="{{ url_for('profesionales.nuevo') }}" class="btn btn-primary">+ Nuevo</a>
+      <a href="{{ url_for('admin.nuevo_usuario') }}" class="btn btn-primary">+ Nuevo usuario</a>
     </div>
   </div>
 
+  <p class="field-help">Los profesionales se gestionan desde Usuarios. Cada profesional tiene un usuario asociado.</p>
+
   <div class="list-wrap">
     {% for profesional in profesionales %}
-      <a class="list-item" href="{{ url_for('profesionales.detalle', profesional_id=profesional.id) }}">
+      <a class="list-item" href="{{ url_for('admin.editar_usuario', user_id=profesional.user_id) }}">
         <strong>{{ profesional.apellido }}, {{ profesional.nombre }}</strong>
-        <small>{{ profesional.especialidad or 'Sin especialidad' }}</small>
+        <small>{{ profesional.especialidad or 'Sin especialidad' }} - @{{ profesional.user.username }}</small>
       </a>
     {% else %}
       <p class="muted">No hay profesionales.</p>

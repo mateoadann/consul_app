@@ -1,0 +1,22 @@
+/* Variables CSS globales */
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --ink: #292524;
+  --muted: #78716c;
+  --muted-soft: #a8a29e;
+  --brand: #ea580c;
+  --brand-hover: #c2410c;
+  --brand-soft: #f1f1f1;
+  --accent: #0d9488;
+  --danger: #b91c1c;
+  --ok: #15803d;
+  --warning: #b45309;
+  --line: #e7e5e4;
+  --line-soft: #d6d3d1;
+  --radius: 14px;
+  --radius-xl: 14px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --font-ui: "DM Sans", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+}

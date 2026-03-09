@@ -1,0 +1,7 @@
+/* Page wrapper */
+.page-wrap {
+  padding: 0.9rem;
+  padding-bottom: 5.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}

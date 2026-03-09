@@ -1,0 +1,37 @@
+/* Topbar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.app-title {
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.topbar > .ghost-btn {
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  min-height: 24px;
+}
+
+.topbar form .ghost-btn {
+  background: transparent;
+  color: var(--brand);
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  min-height: 24px;
+}

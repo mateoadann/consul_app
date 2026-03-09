@@ -1,0 +1,101 @@
+/* Timeline (vista mobile) */
+.timeline {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem 0;
+}
+
+.timeline-slot {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.timeline-time {
+  width: 44px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-soft);
+  padding-top: 0.7rem;
+  flex-shrink: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-group {
+  flex: 1;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.timeline-card {
+  display: grid;
+  gap: 0.15rem;
+  flex: 1;
+  background: #fff;
+  border-radius: 14px;
+  border-left: 4px solid var(--brand);
+  padding: 0.62rem 0.85rem;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.timeline-card.consultorio-color {
+  border-left-color: var(--consultorio-color, var(--brand));
+}
+
+.timeline-card:active {
+  transform: scale(0.98);
+}
+
+.timeline-card-free {
+  border: 2px solid var(--line-soft);
+  border-left: 2px solid var(--line-soft);
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  color: var(--muted-soft);
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-card-free:active {
+  background: #f8f8f8;
+}
+
+.timeline-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.timeline-consultorio-chip {
+  font-size: 10px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+}
+
+.timeline-consultorio-chip.consultorio-color {
+  background: var(--consultorio-color-soft, #f1f1f1);
+  color: var(--consultorio-color, var(--ink));
+}
+
+.timeline-meta {
+  color: var(--muted);
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.timeline-empty {
+  text-align: center;
+  padding: 2rem;
+}
