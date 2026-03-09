@@ -104,6 +104,7 @@ db-bootstrap: env ## Inicializa extensiones y aplica migraciones (dev)
 		$(COMPOSE) exec $(APP_SERVICE) python -c 'from app import create_app; from app.extensions import db; import app.models; app=create_app(); ctx=app.app_context(); ctx.push(); db.create_all(); ctx.pop()'; \
 		$(COMPOSE) exec $(APP_SERVICE) flask --app wsgi.py db stamp head; \
 	fi
+	$(COMPOSE) exec $(APP_SERVICE) flask --app wsgi.py ensure-admin
 
 docker-db-upgrade: db-bootstrap ## Alias: migraciones en Docker dev
 
@@ -158,3 +159,4 @@ prod-db-upgrade: env ## Aplica migraciones en stack de produccion
 		$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) python -c 'from app import create_app; from app.extensions import db; import app.models; app=create_app("production"); ctx=app.app_context(); ctx.push(); db.create_all(); ctx.pop()'; \
 		$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py db stamp head; \
 	fi
+	$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py ensure-admin

@@ -52,6 +52,7 @@ def create_app(config_name: str | None = None) -> Flask:
     register_request_hooks(app)
     register_security_headers(app)
     register_error_handlers(app)
+    register_cli_commands(app)
 
     return app
 
@@ -117,6 +118,27 @@ def register_security_headers(app: Flask) -> None:
             "img-src 'self' data:;"
         )
         return response
+
+
+def register_cli_commands(app: Flask) -> None:
+    import click
+
+    @app.cli.command("ensure-admin")
+    @click.option("--username", default="admin")
+    @click.option("--password", default="admin123")
+    def ensure_admin(username: str, password: str) -> None:
+        """Create default admin user if no admin exists."""
+        from .models import User
+
+        if User.query.filter_by(role="admin").first():
+            click.echo("[ok] Admin user already exists, skipping.")
+            return
+
+        user = User(username=username, role="admin", nombre="Administrador", activo=True)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        click.echo(f"[ok] Admin user '{username}' created.")
 
 
 def register_error_handlers(app: Flask) -> None:
