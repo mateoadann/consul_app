@@ -44,7 +44,11 @@ def test_importar_csv(client, admin_user):
 
     client.post("/auth/login", data={"username": "admin_test", "password": "admin123"})
 
-    csv_content = f"nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo\nJuan,Perez,40000001,1155551234,12345,{os_obj.id},nota test,Juancito\nMaria,Lopez,40000002,,,,,"
+    csv_content = (
+        f"nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo\n"
+        f"Juan,Perez,40000001,1155551234,12345,{os_obj.id},nota test,Juancito\n"
+        f"Maria,Lopez,40000002,,,,,"
+    )
     data = {
         "archivo": (io.BytesIO(csv_content.encode("utf-8")), "pacientes.csv"),
     }
@@ -65,7 +69,10 @@ def test_importar_csv_skip_duplicate(client, admin_user):
     db.session.add(existing)
     db.session.commit()
 
-    csv_content = "nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo\nExisting,Patient,50000001,,,,,"
+    csv_content = (
+        "nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo\n"
+        "Existing,Patient,50000001,,,,,"
+    )
     data = {"archivo": (io.BytesIO(csv_content.encode("utf-8")), "pacientes.csv")}
     response = client.post("/pacientes/importar", data=data, content_type="multipart/form-data")
     assert response.status_code == 200
