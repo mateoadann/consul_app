@@ -5,7 +5,7 @@ from sqlalchemy import text
 
 from app import create_app
 from app.extensions import db
-from app.models import Consultorio, Paciente, Profesional, Turno, User
+from app.models import Consultorio, ObraSocial, Paciente, Profesional, Turno, User
 
 
 def get_or_create_user(username, password, role, nombre):
@@ -63,8 +63,6 @@ def get_or_create_paciente(nombre, apellido, dni, telefono):
         apellido=apellido,
         dni=dni,
         telefono=telefono,
-        email=None,
-        obra_social="Particular",
         notas=None,
         activo=True,
     )
@@ -110,6 +108,11 @@ def run_seed():
         c1 = get_or_create_consultorio("Consultorio 1", "#EA8711")
         c2 = get_or_create_consultorio("Consultorio 2", "#0D9488")
         c3 = get_or_create_consultorio("Consultorio 3", "#2563EB")
+
+        for nombre_os in ["OSDE", "Swiss Medical", "Galeno", "Particular"]:
+            if not ObraSocial.query.filter_by(nombre=nombre_os).first():
+                db.session.add(ObraSocial(nombre=nombre_os))
+        db.session.flush()
 
         for profesional in (prof_1, prof_2, prof_3):
             profesional.consultorios = [c1, c2, c3]
