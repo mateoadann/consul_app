@@ -9,7 +9,7 @@
 
   <dl class="detail-grid">
     <dt>DNI</dt><dd>{{ paciente.dni }}</dd>
-    <dt>Telefono</dt><dd>{{ paciente.telefono or '-' }}</dd>
+    <dt>Cumpleaños</dt><dd>{{ paciente.cumpleanos|fecha_larga if paciente.cumpleanos else '-' }}</dd>
     <dt>Apodo</dt><dd>{{ paciente.apodo or '-' }}</dd>
     <dt>Nro. afiliado</dt><dd>{{ paciente.numero_afiliado or '-' }}</dd>
     <dt>Obra social</dt><dd>{{ paciente.obra_social.nombre if paciente.obra_social else '-' }}</dd>

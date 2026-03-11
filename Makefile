@@ -20,7 +20,8 @@ PYTEST_FLAGS ?= -vv -rA
 .PHONY: help env venv install run seed-local test test-postgres clean-pyc \
 	up up-build down restart logs ps shell db-init db-upgrade db-migrate db-bootstrap \
 	seed docker-test docker-test-db docker-db-upgrade prod-up prod-down prod-restart \
-	prod-logs prod-ps prod-shell prod-db-upgrade deploy backup-auto backup-manual
+	prod-logs prod-ps prod-shell prod-db-upgrade deploy backup-auto backup-manual \
+	vapid-keys notify-birthdays
 
 help: ## Muestra esta ayuda
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUso:\n  make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*?##/ {printf "  %-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -160,6 +161,13 @@ prod-db-upgrade: env ## Aplica migraciones en stack de produccion
 		$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py db stamp head; \
 	fi
 	$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py ensure-admin
+
+# ── Push Notifications ────────────────────────────
+notify-birthdays: ## Envia notificaciones push de cumpleanos (cron: 0 8 * * *)
+	$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py notify birthdays
+
+vapid-keys: ## Genera par de claves VAPID para push notifications
+	@$(PYTHON) -c "from py_vapid import Vapid; v = Vapid(); v.generate_keys(); print('Agrega estas claves a tu .env:\n'); print('VAPID_PRIVATE_KEY=' + v.private_pem().strip()); print('VAPID_PUBLIC_KEY=' + v.public_key_urlsafe_base64())"
 
 # ── Deploy & Backups ──────────────────────────────
 deploy: ## Ejecuta deploy completo en el VPS

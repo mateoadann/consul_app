@@ -1,5 +1,6 @@
 import csv
 import io
+from datetime import datetime
 
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import login_required
@@ -71,7 +72,15 @@ def importar():
                 saltados += 1
                 continue
 
-            telefono = (row.get("telefono") or "").strip() or None
+            cumpleanos = None
+            raw_cumple = (row.get("cumpleanos") or "").strip()
+            if raw_cumple:
+                try:
+                    cumpleanos = datetime.strptime(raw_cumple, "%d/%m/%Y").date()
+                except ValueError:
+                    errores.append(f"Fila {i}: cumpleanos '{raw_cumple}' no tiene formato dd/mm/aaaa")
+                    continue
+
             apodo = (row.get("apodo") or "").strip() or None
             notas = (row.get("notas") or "").strip() or None
 
@@ -97,7 +106,7 @@ def importar():
                 nombre=nombre,
                 apellido=apellido,
                 dni=dni,
-                telefono=telefono,
+                cumpleanos=cumpleanos,
                 apodo=apodo,
                 numero_afiliado=numero_afiliado,
                 obra_social_id=obra_social_id,
@@ -129,7 +138,7 @@ def nuevo():
             nombre=form.nombre.data.strip(),
             apellido=form.apellido.data.strip(),
             dni=form.dni.data.strip(),
-            telefono=form.telefono.data.strip() if form.telefono.data else None,
+            cumpleanos=form.cumpleanos.data,
             apodo=form.apodo.data.strip() if form.apodo.data else None,
             numero_afiliado=form.numero_afiliado.data or None,
             obra_social_id=form.obra_social_id.data or None,
@@ -175,7 +184,7 @@ def editar(paciente_id):
         paciente.nombre = form.nombre.data.strip()
         paciente.apellido = form.apellido.data.strip()
         paciente.dni = form.dni.data.strip()
-        paciente.telefono = form.telefono.data.strip() if form.telefono.data else None
+        paciente.cumpleanos = form.cumpleanos.data
         paciente.apodo = form.apodo.data.strip() if form.apodo.data else None
         paciente.numero_afiliado = form.numero_afiliado.data or None
         paciente.obra_social_id = form.obra_social_id.data or None

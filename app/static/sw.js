@@ -85,7 +85,7 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Push notification handler (for future use)
+// Push notification handler
 self.addEventListener('push', (event) => {
   if (!event.data) return;
 
@@ -95,6 +95,7 @@ self.addEventListener('push', (event) => {
     icon: '/static/icons/icon-192.png',
     badge: '/static/icons/icon-192.png',
     vibrate: [100, 50, 100],
+    tag: data.tag || undefined,
     data: {
       url: data.url || '/'
     }

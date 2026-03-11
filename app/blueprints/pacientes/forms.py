@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
-from wtforms import BooleanField, IntegerField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms import BooleanField, DateField, IntegerField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
@@ -8,7 +8,7 @@ class PacienteForm(FlaskForm):
     nombre = StringField("Nombre", validators=[DataRequired(), Length(max=100)])
     apellido = StringField("Apellido", validators=[DataRequired(), Length(max=100)])
     dni = StringField("DNI", validators=[DataRequired(), Length(max=15)])
-    telefono = StringField("Telefono", validators=[Optional(), Length(max=50)])
+    cumpleanos = DateField("Cumpleaños", format="%Y-%m-%d", validators=[Optional()])
     apodo = StringField("Apodo", validators=[Optional(), Length(max=100)])
     numero_afiliado = IntegerField("Numero de afiliado", validators=[Optional(), NumberRange(min=0)])
     obra_social_id = SelectField("Obra social", coerce=int, validators=[Optional()])

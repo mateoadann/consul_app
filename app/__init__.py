@@ -14,6 +14,7 @@ from .utils.formatting import (
     format_fecha_agenda_corta,
     format_fecha_corta,
     format_fecha_hora_corta,
+    format_fecha_larga,
     format_hora_24,
 )
 
@@ -50,6 +51,7 @@ def create_app(config_name: str | None = None) -> Flask:
 
     register_blueprints(app)
     register_template_filters(app)
+    register_context_processors(app)
     register_request_hooks(app)
     register_security_headers(app)
     register_error_handlers(app)
@@ -63,6 +65,7 @@ def register_blueprints(app: Flask) -> None:
     from .blueprints.agenda.routes import agenda_bp
     from .blueprints.auth.routes import auth_bp
     from .blueprints.consultorios.routes import consultorios_bp
+    from .blueprints.notifications.routes import notifications_bp
     from .blueprints.obra_sociales.routes import obra_sociales_bp
     from .blueprints.pacientes.routes import pacientes_bp
     from .blueprints.profesionales.routes import profesionales_bp
@@ -75,7 +78,14 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(profesionales_bp)
     app.register_blueprint(consultorios_bp)
     app.register_blueprint(obra_sociales_bp)
+    app.register_blueprint(notifications_bp)
     app.register_blueprint(admin_bp)
+
+
+def register_context_processors(app: Flask) -> None:
+    @app.context_processor
+    def inject_vapid_public_key():
+        return {"vapid_public_key": app.config.get("VAPID_PUBLIC_KEY", "")}
 
 
 def register_request_hooks(app: Flask) -> None:
@@ -109,6 +119,7 @@ def register_template_filters(app: Flask) -> None:
     app.jinja_env.filters["fecha_agenda_corta"] = format_fecha_agenda_corta
     app.jinja_env.filters["fecha_corta"] = format_fecha_corta
     app.jinja_env.filters["fecha_hora_corta"] = format_fecha_hora_corta
+    app.jinja_env.filters["fecha_larga"] = format_fecha_larga
     app.jinja_env.filters["hora_24"] = format_hora_24
 
     def _display_name_paciente(paciente):
@@ -146,6 +157,7 @@ def register_security_headers(app: Flask) -> None:
 
 def register_cli_commands(app: Flask) -> None:
     import click
+    from flask.cli import AppGroup
 
     @app.cli.command("ensure-admin")
     @click.option("--username", default="admin")
@@ -163,6 +175,23 @@ def register_cli_commands(app: Flask) -> None:
         db.session.add(user)
         db.session.commit()
         click.echo(f"[ok] Admin user '{username}' created.")
+
+    notify_cli = AppGroup("notify", help="Notification commands")
+
+    @notify_cli.command("birthdays")
+    @click.option("--dry-run", is_flag=True, help="Preview without sending")
+    def birthdays_cmd(dry_run: bool) -> None:
+        """Send push notifications for upcoming patient birthdays."""
+        from .services.notifications import send_birthday_notifications
+
+        results = send_birthday_notifications(dry_run=dry_run)
+        click.echo(
+            f"Results: sent={results['sent']}, "
+            f"skipped={results['skipped']}, "
+            f"failed={results['failed']}"
+        )
+
+    app.cli.add_command(notify_cli)
 
 
 def register_error_handlers(app: Flask) -> None:
