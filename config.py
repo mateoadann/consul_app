@@ -28,7 +28,7 @@ class Config:
 
     # VAPID keys for Web Push notifications
     VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "")
-    VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "")
+    VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").replace("\\n", "\n")
     VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:admin@consulapp.com")
 
 
