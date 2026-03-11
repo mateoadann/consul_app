@@ -20,6 +20,9 @@ class User(UserMixin, TimestampMixin, db.Model):
     activo = db.Column(db.Boolean, nullable=False, default=True)
 
     profesional = db.relationship("Profesional", back_populates="user", uselist=False)
+    push_subscriptions = db.relationship(
+        "PushSubscription", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def set_password(self, raw_password: str) -> None:
         self.password_hash = generate_password_hash(raw_password, method="pbkdf2:sha256")
