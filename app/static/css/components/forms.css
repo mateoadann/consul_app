@@ -39,6 +39,18 @@ textarea:focus {
   box-shadow: 0 0 0 3px var(--brand-soft);
 }
 
+/* iOS Safari date inputs — force custom styling over native */
+input[type="date"].input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  text-align: left;
+}
+
+input[type="date"].input::-webkit-date-and-time-value {
+  text-align: left;
+}
+
 .switch-inline {
   display: inline-flex;
   align-items: center;
