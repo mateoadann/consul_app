@@ -1,7 +1,7 @@
 """add push_subscriptions and notification_logs
 
 Revision ID: cde4d0be4a50
-Revises: 7a8b9c0d1e2f
+Revises: cdc2776fae42
 Create Date: 2026-03-11 13:08:18.796581
 
 """
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'cde4d0be4a50'
-down_revision = '7a8b9c0d1e2f'
+down_revision = 'cdc2776fae42'
 branch_labels = None
 depends_on = None
 
