@@ -9,7 +9,7 @@ class Paciente(TimestampMixin, db.Model):
     nombre = db.Column(db.String(100), nullable=False)
     apellido = db.Column(db.String(100), nullable=False)
     dni = db.Column(db.String(15), nullable=False, unique=True)
-    telefono = db.Column(db.String(50), nullable=True)
+    cumpleanos = db.Column(db.Date, nullable=True)
     apodo = db.Column(db.String(100), nullable=True)
     numero_afiliado = db.Column(db.Integer, nullable=True)
     obra_social_id = db.Column(db.Integer, db.ForeignKey("obra_sociales.id"), nullable=True)

@@ -1,5 +1,10 @@
 from datetime import date, datetime, time
 
+MONTHS_ES = (
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+)
+
 WEEKDAYS_ES = (
     "lunes",
     "martes",
@@ -45,6 +50,14 @@ def format_fecha_hora_corta(value: datetime | None) -> str:
     if value is None:
         return ""
     return f"{format_fecha_corta(value)} {format_hora_24(value)}"
+
+
+def format_fecha_larga(value: date | datetime | None) -> str:
+    parsed = _as_date(value)
+    if parsed is None:
+        return ""
+    month = MONTHS_ES[parsed.month - 1]
+    return f"{parsed.day} de {month} de {parsed.year}"
 
 
 def format_fecha_agenda(value: date | datetime | None) -> str:
