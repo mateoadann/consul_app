@@ -14,6 +14,7 @@ class Paciente(TimestampMixin, db.Model):
     numero_afiliado = db.Column(db.Integer, nullable=True)
     obra_social_id = db.Column(db.Integer, db.ForeignKey("obra_sociales.id"), nullable=True)
     notas = db.Column(db.Text, nullable=True)
+    cumpleanos = db.Column(db.Date, nullable=True)
     activo = db.Column(db.Boolean, nullable=False, default=True)
 
     obra_social = db.relationship("ObraSocial", back_populates="pacientes")

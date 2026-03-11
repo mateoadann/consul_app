@@ -49,6 +49,16 @@ Agregar (viernes a las 21:00):
 
 Reemplazar `/ruta/al/repo` con la ruta real (ej: `/opt/consul_app`).
 
+## 4b. Configurar cron para notificaciones de cumpleanos
+
+Agregar al crontab (todos los dias a las 08:00):
+
+```
+0 8 * * * cd /ruta/al/repo && make notify-birthdays >> /var/log/consul_notify.log 2>&1
+```
+
+Esto envia push notifications a los profesionales que tienen pacientes con cumpleanos ese dia.
+
 ## 5. Configurar git remote
 
 El repo está clonado por HTTPS. Cambiar a SSH para que `git pull` no pida credenciales:
