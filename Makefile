@@ -167,7 +167,15 @@ notify-birthdays: ## Envia notificaciones push de cumpleanos (cron: 0 8 * * *)
 	$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) flask --app wsgi.py notify birthdays
 
 vapid-keys: ## Genera par de claves VAPID para push notifications
-	@$(PYTHON) -c "from py_vapid import Vapid; v = Vapid(); v.generate_keys(); print('Agrega estas claves a tu .env:\n'); print('VAPID_PRIVATE_KEY=' + v.private_pem().strip()); print('VAPID_PUBLIC_KEY=' + v.public_key_urlsafe_base64())"
+	@$(COMPOSE_PROD) exec $(PROD_APP_SERVICE) python3 -c "\
+	import base64; \
+	from py_vapid import Vapid; \
+	from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat; \
+	v = Vapid(); v.generate_keys(); \
+	pub = base64.urlsafe_b64encode(v.public_key.public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)).rstrip(b'=').decode(); \
+	print('Agrega estas claves a tu .env:\n'); \
+	print('VAPID_PRIVATE_KEY=' + v.private_pem().decode().strip()); \
+	print('VAPID_PUBLIC_KEY=' + pub)"
 
 # ── Deploy & Backups ──────────────────────────────
 deploy: ## Ejecuta deploy completo en el VPS
