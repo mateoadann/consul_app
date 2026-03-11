@@ -14,6 +14,7 @@ from .utils.formatting import (
     format_fecha_agenda_corta,
     format_fecha_corta,
     format_fecha_hora_corta,
+    format_fecha_larga,
     format_hora_24,
 )
 
@@ -109,6 +110,7 @@ def register_template_filters(app: Flask) -> None:
     app.jinja_env.filters["fecha_agenda_corta"] = format_fecha_agenda_corta
     app.jinja_env.filters["fecha_corta"] = format_fecha_corta
     app.jinja_env.filters["fecha_hora_corta"] = format_fecha_hora_corta
+    app.jinja_env.filters["fecha_larga"] = format_fecha_larga
     app.jinja_env.filters["hora_24"] = format_hora_24
 
     def _display_name_paciente(paciente):

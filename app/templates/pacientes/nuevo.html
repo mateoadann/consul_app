@@ -28,7 +28,8 @@
     <div id="dni-feedback"></div>
     {% for error in form.dni.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
 
-    <label>{{ form.telefono.label }} {{ form.telefono(class_='input') }}</label>
+    <label>{{ form.cumpleanos.label }} {{ form.cumpleanos(class_='input', type='date') }}</label>
+    {% for error in form.cumpleanos.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
     <label>{{ form.apodo.label }} {{ form.apodo(class_='input') }}</label>
     <label>{{ form.numero_afiliado.label }} {{ form.numero_afiliado(class_='input', type='number') }}</label>
     <label>{{ form.obra_social_id.label }} {{ form.obra_social_id(class_='input') }}</label>

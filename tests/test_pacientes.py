@@ -23,7 +23,7 @@ def test_crear_paciente(client):
             "nombre": "Pedro",
             "apellido": "Perez",
             "dni": "30000001",
-            "telefono": "111",
+            "cumpleanos": "1985-03-15",
             "apodo": "",
             "numero_afiliado": "",
             "obra_social_id": "0",
@@ -45,8 +45,8 @@ def test_importar_csv(client, admin_user):
     client.post("/auth/login", data={"username": "admin_test", "password": "admin123"})
 
     csv_content = (
-        f"nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo\n"
-        f"Juan,Perez,40000001,1155551234,12345,{os_obj.id},nota test,Juancito\n"
+        f"nombre,apellido,dni,cumpleanos,numero_afiliado,obra_social_id,notas,apodo\n"
+        f"Juan,Perez,40000001,15/03/1985,12345,{os_obj.id},nota test,Juancito\n"
         f"Maria,Lopez,40000002,,,,,"
     )
     data = {
@@ -70,7 +70,7 @@ def test_importar_csv_skip_duplicate(client, admin_user):
     db.session.commit()
 
     csv_content = (
-        "nombre,apellido,dni,telefono,numero_afiliado,obra_social_id,notas,apodo\n"
+        "nombre,apellido,dni,cumpleanos,numero_afiliado,obra_social_id,notas,apodo\n"
         "Existing,Patient,50000001,,,,,"
     )
     data = {"archivo": (io.BytesIO(csv_content.encode("utf-8")), "pacientes.csv")}
