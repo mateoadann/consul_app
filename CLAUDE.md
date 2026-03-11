@@ -90,6 +90,34 @@ Two layers: (1) Application-level `find_conflicts()` check before insert for fri
 
 CSRF token is sent via `X-CSRFToken` header, configured globally in `app.js` through `htmx:configRequest` event. The meta tag `csrf-token` in `base.html` provides the value.
 
+## Git Workflow
+
+Three branch types with strict rules:
+
+### Branches
+
+| Branch | Purpose | Receives PRs from | Direct push |
+|--------|---------|-------------------|-------------|
+| `main` | Production | `dev` only | **NEVER** |
+| `dev` | Development/integration | `feature/*` only | **NEVER** |
+| `feature/NNN-slug` | All changes happen here | — | Yes |
+
+### Rules (MANDATORY)
+
+1. **Before ANY change**: verify you are on the correct `feature/NNN-slug` branch. If not, create or switch to one.
+2. **Never commit directly to `main` or `dev`**. All work goes through feature branches.
+3. **Feature branch naming**: `feature/NNN-slug` where NNN is a zero-padded sequential number (e.g., `feature/009-new-feature`).
+4. **Before commit & push**: run ALL backend tests (`make docker-test`) and any relevant frontend tests (Chrome DevTools). Then wait for user confirmation before committing and pushing.
+5. **Merge path**: `feature/* → PR to dev → PR to main`. No skipping steps.
+6. **Creating a new feature branch**: always branch from `dev` (`git checkout dev && git pull && git checkout -b feature/NNN-slug`).
+
+### Pre-commit checklist
+
+- [ ] On correct feature branch
+- [ ] Backend tests pass (`make docker-test`)
+- [ ] Frontend tested (if applicable, via Chrome DevTools)
+- [ ] User confirmed commit & push
+
 ## Database Requirements
 
 PostgreSQL 16+ with extensions `btree_gist` and `pg_trgm` (created by `init-db.sql` and `seed.py`). Trigram indexes on `pacientes` and `profesionales` name fields are created in `seed.py`, not in migrations.

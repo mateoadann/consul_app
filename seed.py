@@ -54,7 +54,7 @@ def get_or_create_consultorio(nombre, color):
     return item
 
 
-def get_or_create_paciente(nombre, apellido, dni, telefono):
+def get_or_create_paciente(nombre, apellido, dni, cumpleanos=None):
     paciente = Paciente.query.filter_by(dni=dni).first()
     if paciente:
         return paciente
@@ -62,7 +62,7 @@ def get_or_create_paciente(nombre, apellido, dni, telefono):
         nombre=nombre,
         apellido=apellido,
         dni=dni,
-        telefono=telefono,
+        cumpleanos=cumpleanos,
         notas=None,
         activo=True,
     )
@@ -117,11 +117,11 @@ def run_seed():
         for profesional in (prof_1, prof_2, prof_3):
             profesional.consultorios = [c1, c2, c3]
 
-        p1 = get_or_create_paciente("Maria", "Gonzalez", "30456789", "11-5555-1234")
-        p2 = get_or_create_paciente("Pedro", "Gomez", "28123456", "11-5252-8888")
-        p3 = get_or_create_paciente("Lucia", "Lopez", "29555111", "11-4333-2211")
-        p4 = get_or_create_paciente("Nicolas", "Martinez", "31222000", "11-4444-9999")
-        p5 = get_or_create_paciente("Ana", "Diaz", "33222111", "11-1111-7777")
+        p1 = get_or_create_paciente("Maria", "Gonzalez", "30456789", date(1985, 3, 15))
+        p2 = get_or_create_paciente("Pedro", "Gomez", "28123456", date(1978, 11, 2))
+        p3 = get_or_create_paciente("Lucia", "Lopez", "29555111", date(1990, 7, 22))
+        p4 = get_or_create_paciente("Nicolas", "Martinez", "31222000", date(1995, 1, 8))
+        p5 = get_or_create_paciente("Ana", "Diaz", "33222111", date(1982, 12, 30))
 
         db.session.commit()
 
